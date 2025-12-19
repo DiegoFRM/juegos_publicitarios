@@ -38,6 +38,11 @@ export default {
                 { alias: "cross", src: "sprites/cross.png" },
                 { alias: "hand", src: "sprites/hand.webp" },
                 { alias: "star_particle", src: "sprites/star_particle.png" },
+                { alias: "red_particle", src: "sprites/red_particle.webp" },
+                { alias: "download_button", src: "sprites/download_button.png" },
+                { alias: "logo_en", src: "sprites/logo_en.png" },
+                { alias: "logo_ko", src: "sprites/logo_ko.png" },
+                { alias: "logo_ja", src: "sprites/logo_ja.png" },
             ]
         }
     ],
@@ -46,7 +51,7 @@ export default {
         { alias: "objects", src: "models/objects2.glb" }
     ],
     fonts: [
-        { alias: "grobold", src: "fonts/grobold.ttf" }
+        { alias: "albertus_nova", src: "fonts/albertusnova.otf" }
     ],
     sounds: [
         { alias: "theme", src: "sounds/theme.mp3" },

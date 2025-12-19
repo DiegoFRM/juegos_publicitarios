@@ -4,6 +4,7 @@ import ScaledText from '../helpers/Scale/ScaledText';
 import AssetsInlineHelper from '../helpers/AssetsInlineHelper';
 
 import PlaneBasicAnimations from '../utils/PlaneBasicAnimations';
+import localization from '../helpers/Localization'
 
 export default class PreloadScene extends Container {
     private _background!: Graphics;
@@ -49,9 +50,9 @@ export default class PreloadScene extends Container {
         assetsContainer.addChild(barAssetsContainer);
 
         const loadingText = new ScaledText({
-            text: 'Loading assets...',
+            text: localization.get('loadingAssets'),
             style: {
-                fontFamily: 'grobold',
+                fontFamily: 'albertus_nova',
                 fontSize: 55,
                 align: 'center',
                 fill: 'white',

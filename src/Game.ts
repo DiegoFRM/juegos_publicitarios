@@ -4,6 +4,9 @@ import MainScene from './scenes/MainScene';
 import Effects from './helpers/Effects';
 import AssetsInlineHelper from './helpers/AssetsInlineHelper';
 
+import localization from './helpers/Localization';
+import localizationData from './data/localizationData';
+
 export default class Game {
     private _app!: Application;
     private _effects!: Effects;
@@ -12,6 +15,7 @@ export default class Game {
     private _assetsInlineHelper: AssetsInlineHelper = new AssetsInlineHelper();
 
     public async initializeGame(width: number, height: number) : Promise<void>{
+        localization.setLanguageData(localizationData);
         this._app = new Application();
         await this._app.init({
             autoDensity: true,

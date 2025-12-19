@@ -13,14 +13,15 @@ export default {
     },
     pieceParticles: {
         type: "image",
-        id: 'star_particle',
-        numberOfParticles: 20,
+        id: 'red_particle',
+        numberOfParticles: 15,
         scale: { 
             portrait:{from: 0.25, to: 0.5 },
-            landscape:{from: 0.5, to: 1. },   
+            landscape:{from: 0.5, to: 1.1},   
         },
         disappearSeconds: {min: 0.2, max: 0.5},
         speed: 3,
+        ignoreGravity: true,
     },
     completeParticles: {
         type: "image",

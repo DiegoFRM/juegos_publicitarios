@@ -8,10 +8,15 @@ export default class ScalerHelper {
     private _landscapeScreenSize = { width: 0, height: 0 };
     private _landscapeScreenPosition = { x: 0, y: 0 };
     private _currentScreenSize = { width: 0, height: 0 };
+    private _ignorePosition: boolean = false;
 
     constructor(
         private _displayObject: Container | Sprite | Graphics,
     ) {}
+
+    public set ignorePosition(value: boolean) {
+        this._ignorePosition = value;
+    }
 
     public setSizes(uiAssetConfig: UIAssetConfig): void {
         this.setPortraitScreenPosition(uiAssetConfig.portraitPosition.x, uiAssetConfig.portraitPosition.y);
@@ -37,6 +42,7 @@ export default class ScalerHelper {
     }
 
     public setScreenPosition(position: {x:number, y:number}): void {
+        if (this._ignorePosition) return;
         this._displayObject.position.set(
             position.x * window.innerWidth,
             position.y * window.innerHeight

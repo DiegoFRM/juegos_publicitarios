@@ -10,10 +10,12 @@ import {
     ColorMatrixFilter,
     ParticleContainer,
     Particle,
-    Texture
+    Texture,
+    Ticker
 } from 'pixi.js';
 import gsap from 'gsap';
-import i18next from 'i18next';
+import ScaledSprite from '../helpers/Scale/ScaledSprite';
+
 import eventsSystem from '../utils/EventsSystem';
 import sound from '../utils/Sound';
 import PlaneBasicAnimations from '../utils/PlaneBasicAnimations';
@@ -22,10 +24,14 @@ import ScaledContainer from '../helpers/Scale/ScaledContainer';
 import BackgroundScaler from '../helpers/BackgroundScaler';
 import SplashParticles from '../utils/SplashParticles';
 import particlesData from '../data/particlesData';
-import ScaledText from '../helpers/Scale/ScaledText';
+import WelcomeScreen from '../helpers/WelcomeScreen';
+import TutorialHand from '../helpers/TutorialHand';
+
+import localization from '../helpers/Localization';
+import { sdk } from '@smoud/playable-sdk';
 
 export default class MainScene extends Container {
-    private _splashParticles: SplashParticles;
+    private _splashParticles!: SplashParticles;
     private _assetsContainer!: ScaledContainer;
     private _backgroundScaler!: BackgroundScaler;
     private _background!: Graphics;
@@ -33,6 +39,14 @@ export default class MainScene extends Container {
     private _isPaused: boolean = false;
     private _assetsInlineHelper: AssetsInlineHelper;
     private _backgroundColor: number = 0x33067a;
+    private _welcomeScreen!: WelcomeScreen;
+    private _tutorialHand!: TutorialHand;
+    private _windowContainer!: Container;
+    private _gameLogo!: ScaledSprite;
+    private _downloadButton!: ScaledSprite;
+    private _elementSprites: Array<Sprite> = [];
+    private _elementPressedIndex: number = 0;
+    private _elementsContainer!: ScaledContainer;
 
 
     public _count: number = 5
@@ -52,7 +66,18 @@ export default class MainScene extends Container {
         this._startLoadingAssets(app);
     }
 
-    private _addEvents(): void { }
+    private _addEvents(): void { 
+        eventsSystem.on('startGame', this._startGame.bind(this));
+    }
+
+    private _startGame(): void { 
+        this._windowContainer.filters = null;
+        for (let j = 0; j < 5; j++) {
+            for (let i = 0; i < 14; i++) {
+                this.tween[j][i].resume()
+            }
+        }
+    }  
 
     private _create(app: Application): void { }
 
@@ -63,31 +88,55 @@ export default class MainScene extends Container {
         });
     }
 
+    private _createGameLogo(): void {
+        this._gameLogo = new ScaledSprite(Assets.get('logo_' + localization.getLanguage()));
+        this._gameLogo.scaler.setPortraitScreenPosition(0.5, 0.94);
+        this._gameLogo.scaler.setLandscapeScreenPosition(0.5, 0.94);
+        this._gameLogo.scaler.setPortraitScreenSize(0.4, 0.08);
+        this._gameLogo.scaler.setLandscapeScreenSize(0.17, 0.11);
+        this._gameLogo.anchor.set(0.5);
+        this._gameLogo.scaler.setOriginalSize(this._gameLogo.width, this._gameLogo.height);
+        this.addChild(this._gameLogo);
 
+        this._downloadButton = new ScaledSprite(Assets.get('download_button'));
+        this._downloadButton.scaler.setPortraitScreenPosition(0.08, 0.95);
+        this._downloadButton.scaler.setLandscapeScreenPosition(0.05, 0.94);
+        this._downloadButton.scaler.setPortraitScreenSize(0.2, 0.1);
+        this._downloadButton.scaler.setLandscapeScreenSize(0.1, 0.12);
+        this._downloadButton.anchor.set(0.5);
+        this._downloadButton.scaler.setOriginalSize(this._downloadButton.width, this._downloadButton.height);
+        this._downloadButton.eventMode = 'static';
+        this._downloadButton.cursor = 'pointer';
+        this._downloadButton.on('pointerdown', () => {
+            sdk.install();
+        });
+        this.addChild(this._downloadButton);
+        this.resize(window.innerWidth, window.innerHeight);
+    }
+
+    private _createParticles(app: Application) {
+        this._splashParticles = new SplashParticles(app);
+        this.addChild(this._splashParticles)
+    }
+
+    private _createTutorialHand(): void {
+        this._tutorialHand = new TutorialHand('hand');
+        this.addChild(this._tutorialHand);
+    }
 
     private async _createPreloadAssets(app: Application) {
 
-        // 1. Configuración de traducciones
-        const resources = {
-            es: { translation: { "tapStart": "PRESIONA PARA EMPEZAR" } },
-            en: { translation: { "tapStart": "TAP TO START" } },
-            ko: { translation: { "tapStart": "탭해서 시작하기" } },
-            jp: { translation: { "tapStart": "タップして開始" } },
-        };
-
-        await i18next.init({
-            lng: 'es', // Idioma inicial
-            resources
-        });
-
         const blurFilter = new BlurFilter();
         const colorMatrix = new ColorMatrixFilter();
+
         const elementActive: Array<Sprite> = [];
         const squares: Array<Graphics> = [];
         const selects: Array<Sprite> = [];
         const ticks: Array<Sprite> = [];
         const maskGraphics: Array<Graphics> = []
         const background = new Graphics().rect(0, 0, app.screen.width, app.screen.height).fill(this._backgroundColor);
+
+        this._elementSprites = elementActive;
 
         let particleData: any = [];
         colorMatrix.grayscale(0.2, true);
@@ -98,17 +147,9 @@ export default class MainScene extends Container {
 
 
 
-        function createExplosion(container: any, texture: Texture, x: number, y: number, scale: number) {
-            for (let i = 0; i < 30; i++) {
-                const p = new Particle({ texture, x, y, scaleX: scale, scaleY: scale });
-                container.addParticle(p);
-                particleData.push({
-                    sprite: p,
-                    vx: (Math.random() - 0.5) * 10,
-                    vy: (Math.random() - 0.5) * 10,
-                    life: 1, // Usamos esto para el desvanecimiento
-                });
-            }
+        const createExplosion = (element: Sprite) => {
+            const globalPos = element.getGlobalPosition();
+            this._splashParticles.showSplashParticles(particlesData.pieceParticles, globalPos);
         }
 
 
@@ -169,6 +210,8 @@ export default class MainScene extends Container {
         elementActive[4].x = -120;
         elementsContainer.addChild(elementActive[4]);
 
+        const checkElements = new ScaledContainer();
+        this.addChild(checkElements);
         for (let a = 0; a < 5; a++) {
             squares[a] = new Graphics();
             selects[a] = new Sprite(Assets.get('select_' + [a + 1]));
@@ -178,22 +221,30 @@ export default class MainScene extends Container {
                 .fill({ color: '#f3ebc0' })
                 .stroke({ width: 1, color: 0xFFFFFF });
             squares[a].alpha = 0;
-            squares[a].y = -380;
+            squares[a].y = 0;
 
             selects[a].x = -230 + (a * 120);
-            selects[a].y = -380;
+            selects[a].y = 52;
             selects[a].scale.set(0.7);
             selects[a].anchor.set(0.5);
             selects[a].alpha = 0;
             selects[a].filters = [colorMatrix];
 
             ticks[a].x = -200 + (a * 120);
-            ticks[a].y = -280;
+            ticks[a].y = 100;
             ticks[a].scale.set(0.2);
             ticks[a].anchor.set(0.5);
             ticks[a].alpha = 0;
-            elementsContainer.addChild(squares[a], selects[a], ticks[a]);
+            checkElements.addChild(squares[a], selects[a], ticks[a]);
         }
+
+        this._elementsContainer = checkElements;
+        checkElements.scaler.setPortraitScreenPosition(0.5, 0.03);
+        checkElements.scaler.setLandscapeScreenPosition(0.5, 0.03);
+        checkElements.scaler.setPortraitScreenSize(0.8, 0.1);
+        checkElements.scaler.setLandscapeScreenSize(0.5, 0.15);
+        checkElements.scaler.setOriginalSize(checkElements.width, checkElements.height);
+
 
         const cross = new Sprite(Assets.get('cross'))
         cross.scale.set(0.6);
@@ -209,23 +260,24 @@ export default class MainScene extends Container {
                     duration: 1 * a,
                     ease: "elastic.out(1,0.5)",
                     alpha: 1,
-                    y: -360
+                    //y: -360
                 })
                 gsap.to(selects[a], {
                     delay: 1,
                     duration: 1 * a,
                     ease: "elastic.out(1,0.5)",
                     alpha: 1,
-                    y: -310,
+                    //y: -310,
                 })
             }
         }
 
-        function activeElements(element: Sprite, index: number) {
-            console.log('positions', element.x, element.y)
+        const activeElements = (element: Sprite, index: number) => {
+            //console.log('positions', element.x, element.y)
+            element.cursor = 'pointer';
             element.on('pointerdown', (event) => {
-                createExplosion(particleContainer, texture, element.x, element.y, 0.2)
-
+                createExplosion(element);
+                this._tutorialHand.cancelTutorial();
                 gsap.fromTo(ticks[index], {
                     scale: 0
                 }, {
@@ -233,6 +285,12 @@ export default class MainScene extends Container {
                     ease: "elastic.out(1,0.5)",
                     alpha: 1,
                     scale: 0.2,
+                    onComplete: () => {
+                        this._elementPressedIndex++;
+                        if (this._elementPressedIndex >= 5) {
+                            sdk.install();
+                        }
+                    }
                 })
                 selects[index].filters = null;
                 elementsContainer.removeChild(element);
@@ -242,6 +300,7 @@ export default class MainScene extends Container {
         const windowContainer = new Container();
         assetsContainer.addChild(windowContainer);
         windowContainer.filters = blurFilter;
+        this._windowContainer = windowContainer;
 
         const backgroundWin = new Sprite(Assets.get('backgroundWin-game-screen'));
         backgroundWin.scale.set(0.7);
@@ -280,6 +339,7 @@ export default class MainScene extends Container {
 
         const _continue = (selectObject: number): void => {
             if (this._count == selectObject) {
+
                 console.log(selectObject)
                 gsap.to(windowContainer, {
                     duration: 1,
@@ -306,6 +366,8 @@ export default class MainScene extends Container {
                             elementActive[a].eventMode = 'static';
                             activeElements(elementActive[a], a)
                         }
+                        const randomElement = elementActive[Math.floor(Math.random() * elementActive.length)];
+                        this._tutorialHand.showTutorialObjects([randomElement], 0.5, true);
                     })
                 })
                 this._count = 6;
@@ -364,88 +426,20 @@ export default class MainScene extends Container {
         this._assetsContainer.scaler.setOriginalSize(assetsContainer.width * .4, assetsContainer.height * .4);
         this.resize(app.screen.width, app.screen.height);
 
-        const rect = new Graphics().rect(0, 0, app.screen.width, app.screen.height).fill("#000000");
-        this._background = rect
-        rect.alpha = 0.7
-        this.addChild(rect)
+        this._welcomeScreen = new WelcomeScreen();
+        this.addChild(this._welcomeScreen);
+        this._welcomeScreen.show();
 
-        const hand = new Sprite(Assets.get('hand'));
-        const texture = new Texture(Assets.get('star_particle'));
-        hand.x = app.screen.width / 2;
-        hand.y = app.screen.height / 2;
-        this.addChild(hand);
-        const animaHand = gsap.to(hand,
-            {
-                duration: 1,
-                x: hand.x - 50,
-                y: hand.y - 50,
-                ease: 'none',
-                yoyo: true,
-                repeat: -1,
-            })
+        this._createGameLogo();
+        this._createTutorialHand();
+        this._createParticles(app);
+        app.ticker.add(this._update.bind(this));
 
-        rect.eventMode = 'static';
-        rect.on('pointerdown', (event) => {
-            this.removeChild(loadingText);
-            this.removeChild(hand);
-            windowContainer.filters = null;
-            gsap.to(rect, {
-                duration: 1,
-                ease: "none",
-                alpha: 0,
-                onComplete: (() => {
-                    this.removeChild(rect)
-                    for (let j = 0; j < 5; j++) {
-                        for (let i = 0; i < 14; i++) {
-                            this.tween[j][i].resume()
-                        }
-                    }
+    }
 
-                })
-            })
-        });
-
-        const particleContainer = new ParticleContainer({
-            dynamicProperties: { position: true, alpha: true }
-        });
-
-        elementsContainer.addChild(particleContainer)
-
-        app.ticker.add((ticker) => {
-            // Recorremos el array de datos (de atrás hacia adelante para eliminar fácil)
-            for (let i = particleData.length - 1; i >= 0; i--) {
-                const data = particleData[i];
-                const p = data.sprite;
-
-                // 1. Aplicar movimiento usando nuestros datos externos
-                p.x += data.vx * ticker.deltaTime * 2;
-                p.y += data.vy * ticker.deltaTime * 2;
-                data.life *= 0.5 * ticker.deltaTime;
-
-                p.alpha = data.life
-                if (data.life <= 0) {
-                    p.alpha = 0
-                    particleContainer.removeParticle(p); // Quita del render de Pixi
-                    particleData.splice(i, 1);   // Quita de nuestra lógica
-                }
-            }
-        });
-
-
-        const loadingText = new ScaledText({
-            text: i18next.t('tapStart'),
-            style: {
-                fontFamily: 'grobold',
-                fontSize: 55,
-                align: 'center',
-                fill: 'white'
-            },
-        });
-        loadingText.anchor.set(0.5, 0.5);
-        loadingText.x = app.screen.width / 2;
-        loadingText.y = app.screen.height / 2 - 100;
-        this.addChild(loadingText);
-
+    private _update(ticker: Ticker): void {
+        //console.log('ticker', ticker.deltaTime);
+        this._splashParticles.updateParticles(ticker.deltaTime);
     }
 
     private _loadSlider(parentContainer: Container, selection: number, delay: number, selectObject: number, callBack: any, _this: any) {
@@ -515,9 +509,7 @@ export default class MainScene extends Container {
 
     }
 
-    private starsParticles(texture: Texture, posX: number, poxY: number): void {
 
-    }
 
 
     public pause(): void {
@@ -536,6 +528,11 @@ export default class MainScene extends Container {
         this._background.y = height * 0.5;
         this._background.pivot.set(width * 0.5, height * 0.5);
         this._assetsContainer.scaler.resize(width, height);
+        this._gameLogo && this._gameLogo.scaler.resize(width, height);
+        this._downloadButton && this._downloadButton.scaler.resize(width, height);
+        this._tutorialHand && this._tutorialHand.resize(width, height);
+        this._welcomeScreen && this._welcomeScreen.resize(width, height);
+        this._elementsContainer && this._elementsContainer.scaler.resize(width, height);
     }
 
     public get active(): boolean {

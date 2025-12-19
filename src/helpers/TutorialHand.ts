@@ -1,43 +1,56 @@
-import { Sprite, Assets, Container, Point } from 'pixi.js';
+import { Sprite, Assets, Container } from 'pixi.js';
+import ScaledSprite from './Scale/ScaledSprite';
 import gsap from 'gsap';
 
-export default class TutorialHand extends Sprite {
+export default class TutorialHand extends ScaledSprite {
     private _running = false;
     private _animationSpeed = 1;
     private _scaleFactor = 1.2;
-    private _portraitScale = 0.6;
-    private _landscapeScale = 0.9;
+    private _skipWiggle = false;
 
     constructor(texture: string) {
         super(Assets.get(texture));
-        this.anchor.set(0.1);
+        this.scaler.setPortraitScreenSize(0.4, 0.3);
+        this.scaler.setLandscapeScreenSize(0.3, 0.3);
+        this.scaler.setOriginalSize(this.width, this.height);
+        this.scaler.ignorePosition = true;
+        this.anchor.set(0);
         this.alpha = 0;
+        this.resize(window.innerWidth, window.innerHeight);
     }
 
     public get running(): boolean {
         return this._running;
     }
 
-    public async showTutorialObjects(objects: (Sprite | Container)[], delay: number = 0, parent?: boolean): Promise<void> {
+    public async showTutorialObjects(objects: (Sprite | Container)[], delay: number = 0, parent?: boolean, skipWiggle?:boolean): Promise<void> {
         await gsap.delayedCall(delay,() => {});
         if (this._running) return;
+        skipWiggle && (this._skipWiggle = skipWiggle);
         this._running = true;
-        const firstObject = objects[0];
-        const startPosition = parent ? firstObject.getGlobalPosition() : firstObject.position;
-        this.position.set(startPosition.x, startPosition.y);
-        await gsap.to(this, { alpha: 1, duration: 0.5 });
 
         while (this._running) {
-            for (const object of objects) {
+            for (let i = 0; i < objects.length; i++) {
                 if (!this._running) break;
-                await this._moveToObject(object, parent);
+                const object = objects[i];
+                if (i == 0) {
+                    const startPosition = parent ? object.getGlobalPosition() : object.position;
+                    console.log('TutorialHand start at:', startPosition);
+                    this.position.set(startPosition.x, startPosition.y);
+                    await gsap.to(this, { alpha: 1, duration: 0.5, delay: 0.5 });
+                    this._wiggleObject(object);
+                } else {
+                    await this._moveToObject(object, parent);
+                }                
             }
+            await gsap.to(this, { alpha: 0, duration: 0.5, delay: 0.75 });
         }
 
         await gsap.to(this, { alpha: 0, duration: 0.5 });
     }
 
     public cancelTutorial(): void {
+        if (!this._running) return;
         this._running = false;
         gsap.killTweensOf(this);
         gsap.to(this, { alpha: 0, duration: 0.5 });
@@ -46,6 +59,7 @@ export default class TutorialHand extends Sprite {
     private _moveToObject(object: Sprite | Container, parent?: boolean): Promise<void> {
         return new Promise((resolve) => {
             const objectPosition = parent ? object.getGlobalPosition() : object.position;
+            console.log('TutorialHand move to:', objectPosition);
             if (this.x == objectPosition.x && this.y == objectPosition.y) {
                 this._wiggleObject(object);
                 resolve();
@@ -66,6 +80,7 @@ export default class TutorialHand extends Sprite {
     }
 
     private _wiggleObject(object: Sprite | Container): void {
+        if (this._skipWiggle) return;
         gsap.killTweensOf(object.scale);
         gsap.to(object.scale, {
             x: object.scale.x * this._scaleFactor,
@@ -77,6 +92,6 @@ export default class TutorialHand extends Sprite {
     }
 
     public resize(width: number, height: number): void {
-        width > height ? this.scale.set(this._landscapeScale) : this.scale.set(this._portraitScale);
+        this.scaler.resize(width, height);
     }
 }
