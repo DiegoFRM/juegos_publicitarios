@@ -37,7 +37,6 @@ export default {
                 { alias: "tick", src: "sprites/correct.png" },
                 { alias: "cross", src: "sprites/cross.png" },
                 { alias: "hand", src: "sprites/hand.webp" },
-                { alias: "star_particle", src: "sprites/star_particle.png" },
                 { alias: "red_particle", src: "sprites/red_particle.webp" },
                 { alias: "download_button", src: "sprites/download_button.png" },
                 { alias: "logo_en", src: "sprites/logo_en.png" },

@@ -55,11 +55,12 @@ export default class AssetsInlineHelper {
             alias: font.alias,
             src: assetContext(`./${font.src}`),
         }));
-
+/*
         this._soundEntries = (this._gameAssets.sounds || []).map((sound: AssetEntry) => ({
             alias: sound.alias,
             src: assetContext(`./${sound.src}`),
         }));
+        */
     }
 
     public async init(): Promise<void> {
@@ -103,6 +104,7 @@ export default class AssetsInlineHelper {
     }
 
     public async loadSounds(): Promise<void> {
+        /*
         await Promise.all(this._soundEntries.map(async (currentSound) => {
             try {
                 await sound.loadSound(currentSound.alias, currentSound.src);
@@ -111,5 +113,6 @@ export default class AssetsInlineHelper {
                 throw error;
             }
         }));
+        */
     }
 }

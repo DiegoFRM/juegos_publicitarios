@@ -11,8 +11,9 @@ import {
     ParticleContainer,
     Particle,
     Texture,
-    Ticker
+    Ticker,
 } from 'pixi.js';
+import { GlowFilter } from 'pixi-filters'
 import gsap from 'gsap';
 import ScaledSprite from '../helpers/Scale/ScaledSprite';
 
@@ -50,13 +51,7 @@ export default class MainScene extends Container {
 
 
     public _count: number = 5
-    public tween: any = [
-        { 0: [] },
-        { 1: [] },
-        { 2: [] },
-        { 3: [] },
-        { 4: [] }
-    ];
+    public tween: any = [];
 
     constructor(app: Application, assetsInlineHelper: AssetsInlineHelper) {
         super();
@@ -72,11 +67,11 @@ export default class MainScene extends Container {
 
     private _startGame(): void {
         this._windowContainer.filters = null;
-        for (let j = 0; j < 5; j++) {
-            for (let i = 0; i < 14; i++) {
-                this.tween[j][i].resume()
-            }
-        }
+           
+                for (let j = 0; j < 5; j++) {
+                    this.tween[j].resume();
+                }
+            
     }
 
     private _create(app: Application): void { }
@@ -217,20 +212,20 @@ export default class MainScene extends Container {
             selects[a] = new Sprite(Assets.get('select_' + [a + 1]));
             ticks[a] = new Sprite(Assets.get('tick'))
 
-            squares[a].roundRect(-280 + (a * 120), 0, 100, 100, 20)
+            squares[a].roundRect(-290 + (a * 120), 0, 100, 100, 20)
                 .fill({ color: '#f3ebc0' })
                 .stroke({ width: 1, color: 0xFFFFFF });
             squares[a].alpha = 0;
             squares[a].y = 0;
 
-            selects[a].x = -230 + (a * 120);
+            selects[a].x = -240 + (a * 120);
             selects[a].y = 52;
             selects[a].scale.set(0.7);
             selects[a].anchor.set(0.5);
             selects[a].alpha = 0;
-            selects[a].filters = [colorMatrix];
 
-            ticks[a].x = -200 + (a * 120);
+
+            ticks[a].x = -210 + (a * 120);
             ticks[a].y = 100;
             ticks[a].scale.set(0.2);
             ticks[a].anchor.set(0.5);
@@ -276,8 +271,19 @@ export default class MainScene extends Container {
             //console.log('positions', element.x, element.y)
             element.cursor = 'pointer';
             element.on('pointerdown', (event) => {
+                selects[index].filters = [colorMatrix];
                 createExplosion(element);
                 this._tutorialHand.cancelTutorial();
+                gsap.to(element, {
+                    duration: 1,
+                    alpha: 0,
+                    y: -400,
+                    x: selects[index].x,
+                    onComplete: () => {
+
+                        elementsContainer.removeChild(element);
+                    }
+                })
                 gsap.fromTo(ticks[index], {
                     scale: 0
                 }, {
@@ -286,14 +292,15 @@ export default class MainScene extends Container {
                     alpha: 1,
                     scale: 0.2,
                     onComplete: () => {
+
+                        elementsContainer.removeChild(element);
                         this._elementPressedIndex++;
                         if (this._elementPressedIndex >= 5) {
                             sdk.install();
                         }
                     }
                 })
-                selects[index].filters = null;
-                elementsContainer.removeChild(element);
+
             });
         }
 
@@ -313,12 +320,11 @@ export default class MainScene extends Container {
         backgroundWinMask.zIndex = 100000;
         windowContainer.addChild(backgroundWinMask);
 
-        const _continue = (selectObject: number): void => {
-            if (this._count == selectObject) {
-
-                console.log(selectObject)
+        const _continue = (): void => {
+           
                 gsap.to(windowContainer, {
                     duration: 1,
+                    delay:1,
                     ease: "elastic.inOut(1,0.5)",
                     y: 1200,
                     onComplete: (() => {
@@ -346,52 +352,118 @@ export default class MainScene extends Container {
                         this._tutorialHand.showTutorialObjects([randomElement], 0.5, true);
                     })
                 })
-                this._count = 6;
-            }
+                
         }
 
 
         const line1 = new Container();
+        const line1Array:Array<Sprite>=[]
         line1.scale.set(0.7);
         line1.mask = backgroundWinMask;
-        line1.y = -210
         line1.x = -250
-        this._loadSlider(line1, 1.0799999999999998, 1, 1, _continue, this)
+        this._loadSlots(line1,line1Array)
         windowContainer.addChild(line1);
+        this.tween[0] = gsap.fromTo(line1,{
+                y:220
+        } ,{
+                duration:3,
+                ease: "elastic.inOut(1,1)",
+                y: 3130,
+                onComplete:()=>{
+                    this._selectElementsScale(line1Array[28])
+                    createExplosion(line1Array[28]);
+                }
+            })
 
         const line2 = new Container();
+        const line2Array:Array<Sprite>=[]
         line2.scale.set(0.7);
         line2.mask = backgroundWinMask;
-        line2.y = -210
         line2.x = -125
-        this._loadSlider(line2, 1.00999999999999999, 1.3, 2, _continue, this)
+        this._loadSlots(line2,line2Array)
         windowContainer.addChild(line2);
+        this.tween[1] = gsap.fromTo(line2,{
+                y:220
+        } ,{
+                duration:3,
+                delay:0.3,
+                ease: "elastic.inOut(1,1)",
+                y: 3243,
+                onComplete:()=>{ 
+                    this._selectElementsScale(line2Array[29]);
+                    createExplosion(line2Array[29]);
+                }
+            })
 
 
         const line3 = new Container();
+        const line3Array:Array<Sprite>=[]
         line3.scale.set(0.7);
         line3.mask = backgroundWinMask;
-        line3.y = -210
         line3.x = 0
-        this._loadSlider(line3, 0.94, 1.4, 3, _continue, this)
+        this._loadSlots(line3,line3Array)
         windowContainer.addChild(line3);
+        this.tween[2] = gsap.fromTo(line3,{
+                y:220
+        } ,{
+                duration:3,
+                delay:0.5,
+                ease: "elastic.inOut(1,1)",
+                y: 3356,
+                onComplete:()=>{
+                     this._selectElementsScale(line3Array[30]);
+                    createExplosion(line3Array[30]);
+                }
+            })
 
         const line4 = new Container();
+        const line4Array:Array<Sprite>=[]
         line4.scale.set(0.7);
         line4.mask = backgroundWinMask;
-        line4.y = -210
         line4.x = 125
-        this._loadSlider(line4, 0.8699999999999999999, 1.5, 4, _continue, this)
+        this._loadSlots(line4,line4Array)
         windowContainer.addChild(line4);
+        this.tween[3] = gsap.fromTo(line4,{
+                y:220
+        } ,{
+                duration:3,
+                delay:0.7,
+                ease: "elastic.inOut(1,1)",
+                y: 3469,
+                onComplete:()=>{
+                    this._selectElementsScale(line4Array[31]);
+                    createExplosion(line4Array[31]);
+                }
+            })
 
 
         const line5 = new Container();
+        const line5Array:Array<Sprite>=[]
         line5.scale.set(0.7);
         line5.mask = backgroundWinMask;
-        line5.y = -210
         line5.x = 250
-        this._loadSlider(line5, 0.7999999999999999, 1.6, 5, _continue, this)
+        this._loadSlots(line5,line5Array)
         windowContainer.addChild(line5);
+        this.tween[4] = gsap.fromTo(line5,{
+                y:220
+        } ,{
+                duration:3,
+                delay:1,
+                ease: "elastic.inOut(1,1)",
+                y: 3582,
+                onComplete:()=>{
+                    this._selectElementsScale(line5Array[32]);
+                    createExplosion(line5Array[32]);
+                    _continue()
+                }
+            })
+
+            this.tween[0].pause();
+            this.tween[1].pause();
+            this.tween[2].pause();
+            this.tween[3].pause();
+            this.tween[4].pause(); 
+
 
 
         const shadowWin = new Sprite(Assets.get('shadow_win'));
@@ -415,79 +487,39 @@ export default class MainScene extends Container {
 
     }
 
-    private _update(ticker: Ticker): void {
-        //console.log('ticker', ticker.deltaTime);
-        this._splashParticles.updateParticles(ticker.deltaTime);
-    }
-
-    private _loadSlider(parentContainer: Container, selection: number, delay: number, selectObject: number, callBack: any, _this: any) {
-        const itemsArray: Array<string | number | any> = [];
-        const boxWidth = 174;
-        for (let i = 0; i < 14; i++) {
-            itemsArray[i] = new Sprite(Assets.get('item_' + i));
-            itemsArray[i].anchor.set(0.5, 0.5);
-            itemsArray[i].y = i + (160 * i);
-            itemsArray[i].name = 'item_' + i;
-            itemsArray[i].data = i;
-            parentContainer.addChild(itemsArray[i]);
-        }
-
-        for (let j = 0; j < 14; j++) {
-            animation(itemsArray[j], j, selection, _this)
-        }
-
-        function animation(element: Sprite, index: number, selection: number, _this: any) {
-     
-            let tweenIn: any = []
-            tweenIn[index] = gsap.to(element, {
-                duration: 0.5,
-                ease: "none",
-                y: `+=${13 * boxWidth}`,
-                modifiers: {
-                    y: gsap.utils.unitize((y) => parseFloat(y) % (13 * boxWidth)) //force x value to be between 0 and 500 using modulus
-                },
-                repeat: 2,
-                onComplete: () => {
-                    stop(tweenIn[index], selection)
-
-                }
-
-            })
-            tweenIn[index].pause();
-            _this.tween[selectObject - 1][index] = tweenIn[index]
-
-        }
-
-
-
-        function stop(animation: any, selection: number) {
-            animation.pause();
-            gsap.to(animation, {
-                duration: 1,
-                progress: gsap.utils.wrap(0, 1, selection),
-                ease: "elastic.out(1,1)",
-                onComplete: () => {
-                    gsap.to(itemsArray[selectObject],
+    private _selectElementsScale(element:Sprite): void {
+        
+         gsap.to(element,
                         {
                             duration: 1,
                             ease: "elastic.out(1,1)",
                             scale: 1.2,
                             zIndex: 1000,
-                            onComplete: () => {
-                               // callBack(selectObject)
-                            }
-                        }
-                    )
-                }
-            });
-
-        }
-
-
+                        })
     }
 
+    private _update(ticker: Ticker): void {
+        //console.log('ticker', ticker.deltaTime);
+        this._splashParticles.updateParticles(ticker.deltaTime);
+    }
 
+    private _loadSlots(parentContainer: Container,array:Array<Sprite>){
+        
+            let index:number = 0
+        for (let i = 0; i < 39; i++) {
 
+            if(index > 12 ){
+                index = 0
+            }else{
+                index++
+            }
+
+            array[i] = new Sprite(Assets.get('item_' + index));
+            array[i].anchor.set(0.5, 0.5);
+            array[i].y = i - (160 * i);
+            parentContainer.addChild(array[i]);
+        }
+    }
 
     public pause(): void {
         this._isPaused = true;
