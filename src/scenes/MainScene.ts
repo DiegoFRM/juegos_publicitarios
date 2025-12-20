@@ -66,18 +66,18 @@ export default class MainScene extends Container {
         this._startLoadingAssets(app);
     }
 
-    private _addEvents(): void { 
+    private _addEvents(): void {
         eventsSystem.on('startGame', this._startGame.bind(this));
     }
 
-    private _startGame(): void { 
+    private _startGame(): void {
         this._windowContainer.filters = null;
         for (let j = 0; j < 5; j++) {
             for (let i = 0; i < 14; i++) {
                 this.tween[j][i].resume()
             }
         }
-    }  
+    }
 
     private _create(app: Application): void { }
 
@@ -307,35 +307,11 @@ export default class MainScene extends Container {
         backgroundWin.anchor.set(0.5, 0.5);
         windowContainer.addChild(backgroundWin);
 
-        for (let c = 0; c < 5; c++) {
-            maskGraphics[c] = new Graphics();
-            const w = 630;
-            const h = 384;
-            const x = backgroundWin.x + (backgroundWin.width / 2.7);
-            const y = backgroundWin.y + (backgroundWin.height / 2.3);
-            maskGraphics[c].moveTo(x + w / 2 - 30, y)
-                // Pico superior
-                .bezierCurveTo(x + w / 2 - 10, y - 12, x + w / 2 + 10, y - 12, x + w / 2 + 30, y)
-                // Superior derecha
-                .bezierCurveTo(x + w - 90, y, x + w - 40, y, x + w, y + 35)
-                // Lateral derecho
-                .bezierCurveTo(x + w + 22, y + h / 2, x + w + 22, y + h / 2, x + w, y + h - 35)
-                // Inferior derecha
-                .bezierCurveTo(x + w - 40, y + h, x + w - 90, y + h, x + w / 2 + 30, y + h)
-                // Pico inferior
-                .bezierCurveTo(x + w / 2 + 10, y + h + 12, x + w / 2 - 10, y + h + 12, x + w / 2 - 30, y + h)
-                // Inferior izquierda
-                .bezierCurveTo(x, y + h, x + 80, y + h, x, y + h - 35)
-                // Lateral izquierdo
-                .bezierCurveTo(x - 22, y + h / 2, x - 22, y + h / 2, x, y + 35)
-                // Superior izquierda
-                .bezierCurveTo(x - 40, y, x + 80, y, x + w / 2 - 30, y)
-                .closePath();
-            maskGraphics[c].fill({ color: 'red' });
-            maskGraphics[c].x = -580;
-            maskGraphics[c].y = -387;
-            windowContainer.addChild(maskGraphics[c]);
-        }
+        const backgroundWinMask = new Sprite(Assets.get('mask-win'));
+        backgroundWinMask.scale.set(0.7);
+        backgroundWinMask.anchor.set(0.5, 0.46);
+        backgroundWinMask.zIndex = 100000;
+        windowContainer.addChild(backgroundWinMask);
 
         const _continue = (selectObject: number): void => {
             if (this._count == selectObject) {
@@ -377,7 +353,7 @@ export default class MainScene extends Container {
 
         const line1 = new Container();
         line1.scale.set(0.7);
-        line1.mask = maskGraphics[0];
+        line1.mask = backgroundWinMask;
         line1.y = -210
         line1.x = -250
         this._loadSlider(line1, 1.0799999999999998, 1, 1, _continue, this)
@@ -385,7 +361,7 @@ export default class MainScene extends Container {
 
         const line2 = new Container();
         line2.scale.set(0.7);
-        line2.mask = maskGraphics[1];
+        line2.mask = backgroundWinMask;
         line2.y = -210
         line2.x = -125
         this._loadSlider(line2, 1.00999999999999999, 1.3, 2, _continue, this)
@@ -394,7 +370,7 @@ export default class MainScene extends Container {
 
         const line3 = new Container();
         line3.scale.set(0.7);
-        line3.mask = maskGraphics[2];
+        line3.mask = backgroundWinMask;
         line3.y = -210
         line3.x = 0
         this._loadSlider(line3, 0.94, 1.4, 3, _continue, this)
@@ -402,7 +378,7 @@ export default class MainScene extends Container {
 
         const line4 = new Container();
         line4.scale.set(0.7);
-        line4.mask = maskGraphics[3];
+        line4.mask = backgroundWinMask;
         line4.y = -210
         line4.x = 125
         this._loadSlider(line4, 0.8699999999999999999, 1.5, 4, _continue, this)
@@ -411,7 +387,7 @@ export default class MainScene extends Container {
 
         const line5 = new Container();
         line5.scale.set(0.7);
-        line5.mask = maskGraphics[4];
+        line5.mask = backgroundWinMask;
         line5.y = -210
         line5.x = 250
         this._loadSlider(line5, 0.7999999999999999, 1.6, 5, _continue, this)
@@ -419,8 +395,10 @@ export default class MainScene extends Container {
 
 
         const shadowWin = new Sprite(Assets.get('shadow_win'));
-        shadowWin.scale.set(0.7);
-        shadowWin.anchor.set(0.5, 0.461);
+        shadowWin.scale.set(0.7, 0.71);
+        shadowWin.anchor.set(0.5, 0.46);
+
+        shadowWin.y = backgroundWinMask.y
         windowContainer.addChild(shadowWin);
 
         this._assetsContainer.scaler.setOriginalSize(assetsContainer.width * .4, assetsContainer.height * .4);
@@ -459,16 +437,16 @@ export default class MainScene extends Container {
         }
 
         function animation(element: Sprite, index: number, selection: number, _this: any) {
-
+     
             let tweenIn: any = []
             tweenIn[index] = gsap.to(element, {
-                duration: delay,
+                duration: 0.5,
                 ease: "none",
                 y: `+=${13 * boxWidth}`,
                 modifiers: {
                     y: gsap.utils.unitize((y) => parseFloat(y) % (13 * boxWidth)) //force x value to be between 0 and 500 using modulus
                 },
-                repeat: 1,
+                repeat: 2,
                 onComplete: () => {
                     stop(tweenIn[index], selection)
 
@@ -485,19 +463,18 @@ export default class MainScene extends Container {
         function stop(animation: any, selection: number) {
             animation.pause();
             gsap.to(animation, {
-                duration: 2,
+                duration: 1,
                 progress: gsap.utils.wrap(0, 1, selection),
                 ease: "elastic.out(1,1)",
                 onComplete: () => {
                     gsap.to(itemsArray[selectObject],
                         {
-                            delay: 1,
                             duration: 1,
                             ease: "elastic.out(1,1)",
                             scale: 1.2,
                             zIndex: 1000,
                             onComplete: () => {
-                                callBack(selectObject)
+                               // callBack(selectObject)
                             }
                         }
                     )
