@@ -318,7 +318,10 @@ export default class MainScene extends Container {
 
             gsap.to(backgroundWin, {
                 delay: 1,
-                alpha: 0
+                alpha: 0,onComplete:()=>{
+                    line1.mask = null;
+                    line5.mask = null;
+                }
             })
 
             for (let i = 0; i < 39; i++) {
@@ -354,6 +357,7 @@ export default class MainScene extends Container {
                 }
             }
 
+            
              gsap.to(line1, {
                         delay: 1,
                         x:line1.x -10
@@ -410,7 +414,7 @@ export default class MainScene extends Container {
             function animationMove() {
                 const isPortrait = window.innerHeight > window.innerWidth;
 
-                const moveY = isPortrait ? -750 : -300;
+                const moveY = isPortrait ? -550 : -300;
                 gsap.to(windowContainer, {
                     y: moveY
                 })
