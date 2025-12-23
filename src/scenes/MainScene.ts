@@ -47,6 +47,7 @@ export default class MainScene extends Container {
     private _elementSprites: Array<Sprite> = [];
     private _elementPressedIndex: number = 0;
     private _elementsContainer!: ScaledContainer;
+    private _tutorialTimeOut: gsap.core.Tween | null = null;
 
 
     public _count: number = 5
@@ -271,6 +272,14 @@ export default class MainScene extends Container {
             //console.log('positions', element.x, element.y)
             element.cursor = 'pointer';
             element.on('pointerdown', (event) => {
+                if (this._tutorialTimeOut) {
+                    this._tutorialTimeOut.kill();
+                }
+                if (this._elementPressedIndex <= 4) {
+                    this._tutorialTimeOut = gsap.delayedCall(5, () => {
+                        this._showTutorialHand();
+                    });
+                }
                 selects[index].filters = [colorMatrix];
                 selects[index].alpha = 0.3;
                 createExplosion(element);
@@ -349,8 +358,7 @@ export default class MainScene extends Container {
                             elementActive[a].eventMode = 'static';
                             activeElements(elementActive[a], a)
                         }
-                        const randomElement = elementActive[1];
-                        this._tutorialHand.showTutorialObjects([randomElement], 0.5, true);
+                        this._showTutorialHand();
                     })
                 })
                 
@@ -486,6 +494,14 @@ export default class MainScene extends Container {
         this._createParticles(app);
         app.ticker.add(this._update.bind(this));
         
+    }
+
+    private _showTutorialHand(): void {
+        const activeElements = this._elementSprites.filter((element) => element.alpha === 1);
+        if (activeElements.length === 0) return;
+        const randomIndex = Math.floor(Math.random() * activeElements.length);
+        const randomElement = activeElements[randomIndex];
+        this._tutorialHand.showTutorialObjects([randomElement], 0.5, true);
     }
 
     private _selectElementsScale(element:Sprite): void {
