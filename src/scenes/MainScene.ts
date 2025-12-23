@@ -133,8 +133,9 @@ export default class MainScene extends Container {
         this._elementSprites = elementActive;
 
         let particleData: any = [];
-        colorMatrix.grayscale(0.2, true);
-        blurFilter.blur = 10;
+        //colorMatrix.grayscale(0.5, true);
+        colorMatrix.blendMode = 'multiply'; 
+        blurFilter.blur = 3;
 
         this.addChild(background);
         this._background = background;
@@ -233,10 +234,10 @@ export default class MainScene extends Container {
         }
 
         this._elementsContainer = checkElements;
-        checkElements.scaler.setPortraitScreenPosition(0.5, 0.03);
+        checkElements.scaler.setPortraitScreenPosition(0.5, 0.05);
         checkElements.scaler.setLandscapeScreenPosition(0.5, 0.03);
-        checkElements.scaler.setPortraitScreenSize(0.8, 0.1);
-        checkElements.scaler.setLandscapeScreenSize(0.5, 0.15);
+        checkElements.scaler.setPortraitScreenSize(0.95, 0.9);
+        checkElements.scaler.setLandscapeScreenSize(0.52, 0.17);
         checkElements.scaler.setOriginalSize(checkElements.width, checkElements.height);
 
 
@@ -271,6 +272,7 @@ export default class MainScene extends Container {
             element.cursor = 'pointer';
             element.on('pointerdown', (event) => {
                 selects[index].filters = [colorMatrix];
+                selects[index].alpha = 0.3;
                 createExplosion(element);
                 this._tutorialHand.cancelTutorial();
                 gsap.to(element, {
