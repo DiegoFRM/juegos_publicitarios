@@ -67,11 +67,11 @@ export default class MainScene extends Container {
 
     private _startGame(): void {
         this._windowContainer.filters = null;
-           
-                for (let j = 0; j < 5; j++) {
-                   this.tween[j].resume();
-                }
-            
+
+        for (let j = 0; j < 5; j++) {
+            this.tween[j].resume();
+        }
+
     }
 
     private _create(app: Application): void { }
@@ -135,7 +135,7 @@ export default class MainScene extends Container {
 
         let particleData: any = [];
         //colorMatrix.grayscale(0.5, true);
-        colorMatrix.blendMode = 'multiply'; 
+        colorMatrix.blendMode = 'multiply';
         blurFilter.blur = 3;
 
         this.addChild(background);
@@ -208,31 +208,7 @@ export default class MainScene extends Container {
 
         const checkElements = new ScaledContainer();
         this.addChild(checkElements);
-        for (let a = 0; a < 5; a++) {
-            squares[a] = new Graphics();
-            selects[a] = new Sprite(Assets.get('select_' + [a + 1]));
-            ticks[a] = new Sprite(Assets.get('tick'))
-
-            squares[a].roundRect(-290 + (a * 120), 0, 100, 100, 20)
-                .fill({ color: '#f3ebc0' })
-                .stroke({ width: 1, color: 0xFFFFFF });
-            squares[a].alpha = 0;
-            squares[a].y = 0;
-
-            selects[a].x = -240 + (a * 120);
-            selects[a].y = 52;
-            selects[a].scale.set(0.7);
-            selects[a].anchor.set(0.5);
-            selects[a].alpha = 0;
-
-
-            ticks[a].x = -210 + (a * 120);
-            ticks[a].y = 100;
-            ticks[a].scale.set(0.2);
-            ticks[a].anchor.set(0.5);
-            ticks[a].alpha = 0;
-            checkElements.addChild(squares[a], selects[a], ticks[a]);
-        }
+      
 
         this._elementsContainer = checkElements;
         checkElements.scaler.setPortraitScreenPosition(0.5, 0.05);
@@ -249,27 +225,15 @@ export default class MainScene extends Container {
         elementsContainer.addChild(cross);
 
 
-        function animationStartSquares() {
-            for (let a = 0; a < 5; a++) {
-                gsap.to(squares[a], {
-                    delay: 1,
-                    duration: 1 * a,
-                    ease: "elastic.out(1,0.5)",
-                    alpha: 1,
-                    //y: -360
-                })
-                gsap.to(selects[a], {
-                    delay: 1,
-                    duration: 1 * a,
-                    ease: "elastic.out(1,0.5)",
-                    alpha: 1,
-                    //y: -310,
-                })
-            }
-        }
-
         const activeElements = (element: Sprite, index: number) => {
             //console.log('positions', element.x, element.y)
+            const arraySelects:Array<Sprite> = [
+                line1Array[28],
+                line2Array[29],
+                line3Array[30],
+                line4Array[31],
+                line5Array[32],
+            ]
             element.cursor = 'pointer';
             element.on('pointerdown', (event) => {
                 if (this._tutorialTimeOut) {
@@ -281,7 +245,7 @@ export default class MainScene extends Container {
                     });
                 }
                 selects[index].filters = [colorMatrix];
-                selects[index].alpha = 0.3;
+                arraySelects[index].alpha = 0.3;
                 createExplosion(element);
                 this._tutorialHand.cancelTutorial();
                 gsap.to(element, {
@@ -316,8 +280,28 @@ export default class MainScene extends Container {
 
         const windowContainer = new Container();
         assetsContainer.addChild(windowContainer);
-        windowContainer.filters = blurFilter;
         this._windowContainer = windowContainer;
+
+          for (let a = 0; a < 5; a++) {
+            selects[a] = new Sprite(Assets.get('select_' + [a + 1]));
+            ticks[a] = new Sprite(Assets.get('tick'))
+
+            selects[a].x = -240 + (a * 120);
+            selects[a].y = 52;
+            selects[a].scale.set(0.7);
+            selects[a].anchor.set(0.5);
+            selects[a].alpha = 0;
+
+
+            ticks[a].x = -255 + (a * 128);
+            ticks[a].y = 13;
+            ticks[a].scale.set(0.2);
+            ticks[a].anchor.set(0.5);
+            ticks[a].alpha = 0;
+            checkElements.addChild(selects[a], ticks[a]);
+            
+            windowContainer.addChild(ticks[a]);
+        }
 
         const backgroundWin = new Sprite(Assets.get('backgroundWin-game-screen'));
         backgroundWin.scale.set(0.7);
@@ -331,147 +315,250 @@ export default class MainScene extends Container {
         windowContainer.addChild(backgroundWinMask);
 
         const _continue = (): void => {
-           
-                gsap.to(windowContainer, {
-                    duration: 1,
-                    delay:1,
-                    ease: "elastic.inOut(1,0.5)",
-                    y: 1200,
-                    onComplete: (() => {
-                        assetsContainer.removeChild(windowContainer);
-                        backgroundContainer.filters = null;
-                        elementsContainer.filters = null;
-                        animationStartSquares()
-                        backgroundResize.eventMode = 'static';
-                        backgroundResize.on('pointerdown', (event) => {
-                            console.log('incorrect!')
-                            gsap.fromTo(cross, {
-                                alpha: 1,
-                            }, {
-                                alpha: 0,
-                                duration: 0.3,
-                                ease: "none",
-                                repeat: 3
-                            })
-                        })
-                        for (let a = 0; a < 5; a++) {
-                            elementActive[a].eventMode = 'static';
-                            activeElements(elementActive[a], a)
-                        }
-                        this._showTutorialHand();
+
+            gsap.to(backgroundWin, {
+                delay: 1,
+                alpha: 0
+            })
+
+            for (let i = 0; i < 39; i++) {
+                if (i != 28) {
+                    gsap.to(line1Array[i], {
+                        delay: 1,
+                        alpha: 0
                     })
-                })
+                }
+                if (i != 29) {
+                    gsap.to(line2Array[i], {
+                        delay: 1,
+                        alpha: 0
+                    })
+                }
+                if (i != 30) {
+                    gsap.to(line3Array[i], {
+                        delay: 1,
+                        alpha: 0
+                    })
+                }
+                if (i != 31) {
+                    gsap.to(line4Array[i], {
+                        delay: 1,
+                        alpha: 0
+                    })
+                }
+                if (i != 32) {
+                    gsap.to(line5Array[i], {
+                        delay: 1,
+                        alpha: 0
+                    })
+                }
+            }
+
+             gsap.to(line1, {
+                        delay: 1,
+                        x:line1.x -10
+                    })
                 
+            gsap.to(line2, {
+                        delay: 1,
+                        x:line2.x -5
+                    })
+
+            
+            gsap.to(line4, {
+                        delay: 1,
+                        x:line4.x +  5
+                    })
+
+            gsap.to(line5, {
+                        delay: 1,
+                        x: line5.x + 10,
+                        onComplete:()=>{
+                           backgroundContainer.filters = null;
+                         elementsContainer.filters = null;
+                         backgroundResize.eventMode = 'static';
+                         backgroundResize.on('pointerdown', (event) => {
+                             console.log('incorrect!')
+                             gsap.fromTo(cross, {
+                                 alpha: 1,
+                             }, {
+                                 alpha: 0,
+                                 duration: 0.3,
+                                 ease: "none",
+                                 repeat: 3
+                             })
+                         })
+                         for (let a = 0; a < 5; a++) {
+                             elementActive[a].eventMode = 'static';
+                             activeElements(elementActive[a], a)
+                         }
+                         this._showTutorialHand();  
+                        }
+                    })
+
+            gsap.to(shadowWin, {
+                    delay:1.1,
+                    alpha: 0,
+                    onComplete:()=>{
+                        app.ticker.add(animationMove.bind(this));
+                    }
+                })
+
+
+            
+
+            function animationMove() {
+                const isPortrait = window.innerHeight > window.innerWidth;
+
+                const moveY = isPortrait ? -750 : -300;
+                gsap.to(windowContainer, {
+                    y: moveY
+                })
+            }
+
+
+
+            /*
+                 gsap.to(windowContainer, {
+                     duration: 1,
+                     delay:1,
+                     ease: "elastic.inOut(1,0.5)",
+                     y: 1200,
+                     onComplete: (() => {
+                         assetsContainer.removeChild(windowContainer);
+                         backgroundContainer.filters = null;
+                         elementsContainer.filters = null;
+                         animationStartSquares()
+                         backgroundResize.eventMode = 'static';
+                         backgroundResize.on('pointerdown', (event) => {
+                             console.log('incorrect!')
+                             gsap.fromTo(cross, {
+                                 alpha: 1,
+                             }, {
+                                 alpha: 0,
+                                 duration: 0.3,
+                                 ease: "none",
+                                 repeat: 3
+                             })
+                         })
+                         for (let a = 0; a < 5; a++) {
+                             elementActive[a].eventMode = 'static';
+                             activeElements(elementActive[a], a)
+                         }
+                         this._showTutorialHand();
+                     })
+                 })*/
+
         }
 
 
         const line1 = new Container();
-        const line1Array:Array<Sprite>=[]
+        const line1Array: Array<Sprite> = []
         line1.scale.set(0.7);
         line1.mask = backgroundWinMask;
         line1.x = -250
-        this._loadSlots(line1,line1Array)
+        this._loadSlots(line1, line1Array)
         windowContainer.addChild(line1);
-        this.tween[0] = gsap.fromTo(line1,{
-                y:220
-        } ,{
-                duration:3,
-                ease: "elastic.inOut(1,1)",
-                y: 3130,
-                onComplete:()=>{
-                    this._selectElementsScale(line1Array[28])
-                    createExplosion(line1Array[28]);
-                }
-            })
+        this.tween[0] = gsap.fromTo(line1, {
+            y: 220
+        }, {
+            duration: 3,
+            ease: "elastic.inOut(1,1)",
+            y: 3130,
+            onComplete: () => {
+                this._selectElementsScale(line1Array[28])
+                createExplosion(line1Array[28]);
+            }
+        })
 
         const line2 = new Container();
-        const line2Array:Array<Sprite>=[]
+        const line2Array: Array<Sprite> = []
         line2.scale.set(0.7);
         line2.mask = backgroundWinMask;
         line2.x = -125
-        this._loadSlots(line2,line2Array)
+        this._loadSlots(line2, line2Array)
         windowContainer.addChild(line2);
-        this.tween[1] = gsap.fromTo(line2,{
-                y:220
-        } ,{
-                duration:3,
-                delay:0.3,
-                ease: "elastic.inOut(1,1)",
-                y: 3243,
-                onComplete:()=>{ 
-                    this._selectElementsScale(line2Array[29]);
-                    createExplosion(line2Array[29]);
-                }
-            })
+        this.tween[1] = gsap.fromTo(line2, {
+            y: 220
+        }, {
+            duration: 3,
+            delay: 0.3,
+            ease: "elastic.inOut(1,1)",
+            y: 3243,
+            onComplete: () => {
+                this._selectElementsScale(line2Array[29]);
+                createExplosion(line2Array[29]);
+            }
+        })
 
 
         const line3 = new Container();
-        const line3Array:Array<Sprite>=[]
+        const line3Array: Array<Sprite> = []
         line3.scale.set(0.7);
         line3.mask = backgroundWinMask;
         line3.x = 0
-        this._loadSlots(line3,line3Array)
+        this._loadSlots(line3, line3Array)
         windowContainer.addChild(line3);
-        this.tween[2] = gsap.fromTo(line3,{
-                y:220
-        } ,{
-                duration:3,
-                delay:0.5,
-                ease: "elastic.inOut(1,1)",
-                y: 3356,
-                onComplete:()=>{
-                     this._selectElementsScale(line3Array[30]);
-                    createExplosion(line3Array[30]);
-                }
-            })
+        this.tween[2] = gsap.fromTo(line3, {
+            y: 220
+        }, {
+            duration: 3,
+            delay: 0.5,
+            ease: "elastic.inOut(1,1)",
+            y: 3356,
+            onComplete: () => {
+                this._selectElementsScale(line3Array[30]);
+                createExplosion(line3Array[30]);
+            }
+        })
 
         const line4 = new Container();
-        const line4Array:Array<Sprite>=[]
+        const line4Array: Array<Sprite> = []
         line4.scale.set(0.7);
         line4.mask = backgroundWinMask;
         line4.x = 125
-        this._loadSlots(line4,line4Array)
+        this._loadSlots(line4, line4Array)
         windowContainer.addChild(line4);
-        this.tween[3] = gsap.fromTo(line4,{
-                y:220
-        } ,{
-                duration:3,
-                delay:0.7,
-                ease: "elastic.inOut(1,1)",
-                y: 3469,
-                onComplete:()=>{
-                    this._selectElementsScale(line4Array[31]);
-                    createExplosion(line4Array[31]);
-                }
-            })
+        this.tween[3] = gsap.fromTo(line4, {
+            y: 220
+        }, {
+            duration: 3,
+            delay: 0.7,
+            ease: "elastic.inOut(1,1)",
+            y: 3469,
+            onComplete: () => {
+                this._selectElementsScale(line4Array[31]);
+                createExplosion(line4Array[31]);
+            }
+        })
 
 
         const line5 = new Container();
-        const line5Array:Array<Sprite>=[]
+        const line5Array: Array<Sprite> = []
         line5.scale.set(0.7);
         line5.mask = backgroundWinMask;
         line5.x = 250
-        this._loadSlots(line5,line5Array)
+        this._loadSlots(line5, line5Array)
         windowContainer.addChild(line5);
-        this.tween[4] = gsap.fromTo(line5,{
-                y:220
-        } ,{
-                duration:3,
-                delay:1,
-                ease: "elastic.inOut(1,1)",
-                y: 3582,
-                onComplete:()=>{
-                    this._selectElementsScale(line5Array[32]);
-                    createExplosion(line5Array[32]);
-                    _continue()
-                }
-            })
+        this.tween[4] = gsap.fromTo(line5, {
+            y: 220
+        }, {
+            duration: 3,
+            delay: 1,
+            ease: "elastic.inOut(1,1)",
+            y: 3582,
+            onComplete: () => {
+                this._selectElementsScale(line5Array[32]);
+                createExplosion(line5Array[32]);
+                _continue()
+            }
+        })
 
-            this.tween[0].pause();
-            this.tween[1].pause();
-            this.tween[2].pause();
-            this.tween[3].pause();
-            this.tween[4].pause(); 
+        this.tween[0].pause();
+        this.tween[1].pause();
+        this.tween[2].pause();
+        this.tween[3].pause();
+        this.tween[4].pause();
 
 
 
@@ -493,7 +580,7 @@ export default class MainScene extends Container {
         this._createTutorialHand();
         this._createParticles(app);
         app.ticker.add(this._update.bind(this));
-        
+
     }
 
     private _showTutorialHand(): void {
@@ -504,15 +591,15 @@ export default class MainScene extends Container {
         this._tutorialHand.showTutorialObjects([randomElement], 0.5, true);
     }
 
-    private _selectElementsScale(element:Sprite): void {
-        
-         gsap.to(element,
-                        {
-                            duration: 1,
-                            ease: "elastic.out(1,1)",
-                            scale: 1.2,
-                            zIndex: 1000,
-                        })
+    private _selectElementsScale(element: Sprite): void {
+
+        gsap.to(element,
+            {
+                duration: 1,
+                ease: "elastic.out(1,1)",
+                scale: 1.2,
+                zIndex: 1000,
+            })
     }
 
     private _update(ticker: Ticker): void {
@@ -520,14 +607,14 @@ export default class MainScene extends Container {
         this._splashParticles.updateParticles(ticker.deltaTime);
     }
 
-    private _loadSlots(parentContainer: Container,array:Array<Sprite>){
-        
-            let index:number = 0
+    private _loadSlots(parentContainer: Container, array: Array<Sprite>) {
+
+        let index: number = 0
         for (let i = 0; i < 39; i++) {
 
-            if(index > 12 ){
+            if (index > 12) {
                 index = 0
-            }else{
+            } else {
                 index++
             }
 
