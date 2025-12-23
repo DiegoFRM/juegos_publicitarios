@@ -27,7 +27,6 @@ import SplashParticles from '../utils/SplashParticles';
 import particlesData from '../data/particlesData';
 import WelcomeScreen from '../helpers/WelcomeScreen';
 import TutorialHand from '../helpers/TutorialHand';
-
 import localization from '../helpers/Localization';
 import { sdk } from '@smoud/playable-sdk';
 
@@ -69,7 +68,7 @@ export default class MainScene extends Container {
         this._windowContainer.filters = null;
            
                 for (let j = 0; j < 5; j++) {
-                    this.tween[j].resume();
+                   this.tween[j].resume();
                 }
             
     }
@@ -86,16 +85,16 @@ export default class MainScene extends Container {
     private _createGameLogo(): void {
         this._gameLogo = new ScaledSprite(Assets.get('logo_' + localization.getLanguage()));
         this._gameLogo.scaler.setPortraitScreenPosition(0.5, 0.94);
-        this._gameLogo.scaler.setLandscapeScreenPosition(0.5, 0.94);
-        this._gameLogo.scaler.setPortraitScreenSize(0.4, 0.08);
-        this._gameLogo.scaler.setLandscapeScreenSize(0.17, 0.11);
+        this._gameLogo.scaler.setLandscapeScreenPosition(0.5, 0.91);
+        this._gameLogo.scaler.setPortraitScreenSize(0.5, 0.18);
+        this._gameLogo.scaler.setLandscapeScreenSize(0.2, 0.14);
         this._gameLogo.anchor.set(0.5);
         this._gameLogo.scaler.setOriginalSize(this._gameLogo.width, this._gameLogo.height);
         this.addChild(this._gameLogo);
 
         this._downloadButton = new ScaledSprite(Assets.get('download_button'));
         this._downloadButton.scaler.setPortraitScreenPosition(0.08, 0.95);
-        this._downloadButton.scaler.setLandscapeScreenPosition(0.05, 0.94);
+        this._downloadButton.scaler.setLandscapeScreenPosition(0.05, 0.935);
         this._downloadButton.scaler.setPortraitScreenSize(0.2, 0.1);
         this._downloadButton.scaler.setLandscapeScreenSize(0.1, 0.12);
         this._downloadButton.anchor.set(0.5);
@@ -161,7 +160,7 @@ export default class MainScene extends Container {
 
         const backgroundResize = new Sprite(Assets.get('background-game-screen'));
         //const backgroundResize = new BackgroundScaler(Assets.get('background-game-screen'))
-        backgroundResize.anchor.set(0.5, 0.4);
+        backgroundResize.anchor.set(0.5, 0.5);
         backgroundContainer.addChild(backgroundResize);
         backgroundContainer.filters = blurFilter;
 
@@ -172,7 +171,7 @@ export default class MainScene extends Container {
 
         elementActive[0] = new Sprite(Assets.get('select_1'));
         elementActive[0].anchor.set(0.5);
-        elementActive[0].y = 10;
+        elementActive[0].y = -180;
         elementActive[0].x = 250;
         elementsContainer.addChild(elementActive[0]);
 
@@ -180,7 +179,7 @@ export default class MainScene extends Container {
         elementActive[1] = new Sprite(Assets.get('select_2'));
         elementActive[1].anchor.set(0.5);
         elementActive[1].scale.set(0.3)
-        elementActive[1].y = 240;
+        elementActive[1].y = 50;
         elementActive[1].x = 0;
         elementsContainer.addChild(elementActive[1]);
 
@@ -188,20 +187,20 @@ export default class MainScene extends Container {
         elementActive[2] = new Sprite(Assets.get('select_3'));
         elementActive[2].anchor.set(0.5);
         elementActive[2].scale.set(0.5)
-        elementActive[2].y = 180;
+        elementActive[2].y = -10;
         elementActive[2].x = -300;
         elementsContainer.addChild(elementActive[2]);
 
         elementActive[3] = new Sprite(Assets.get('select_4'));
         elementActive[3].anchor.set(0.5);
         elementActive[3].scale.set(0.5)
-        elementActive[3].y = 240;
+        elementActive[3].y = 50;
         elementActive[3].x = 300;
         elementsContainer.addChild(elementActive[3]);
 
         elementActive[4] = new Sprite(Assets.get('select_5'));
         elementActive[4].anchor.set(0.5);
-        elementActive[4].y = -10;
+        elementActive[4].y = -200;
         elementActive[4].x = -120;
         elementsContainer.addChild(elementActive[4]);
 
@@ -348,7 +347,7 @@ export default class MainScene extends Container {
                             elementActive[a].eventMode = 'static';
                             activeElements(elementActive[a], a)
                         }
-                        const randomElement = elementActive[Math.floor(Math.random() * elementActive.length)];
+                        const randomElement = elementActive[1];
                         this._tutorialHand.showTutorialObjects([randomElement], 0.5, true);
                     })
                 })
@@ -484,7 +483,7 @@ export default class MainScene extends Container {
         this._createTutorialHand();
         this._createParticles(app);
         app.ticker.add(this._update.bind(this));
-
+        
     }
 
     private _selectElementsScale(element:Sprite): void {

@@ -43,10 +43,10 @@ export default class TutorialHand extends ScaledSprite {
                     await this._moveToObject(object, parent);
                 }                
             }
-            await gsap.to(this, { alpha: 0, duration: 0.5, delay: 0.75 });
+            await gsap.to(this, { alpha: 1,x:this.position.x + 10,yoyo:true,repeat:1, duration: 0.5, delay: 0.75 });
         }
 
-        await gsap.to(this, { alpha: 0, duration: 0.5 });
+        await gsap.to(this, { alpha: 1,x:this.position.x, duration: 0.5 });
     }
 
     public cancelTutorial(): void {
