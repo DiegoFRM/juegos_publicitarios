@@ -1,0 +1,154 @@
+{
+    "clients": [
+
+        {
+            "characters": [
+                {
+                    "name": "Pretty woman",
+                    "skeleton": "prettyWoman_json",
+                    "atlas": "prettyWoman_atlas",
+                    "skin": "default",
+                    "scale": 0.5
+                }
+            ],
+            "correctOption": "single", 
+            "reactions": {
+                "vip": "Too expensive!",
+                "love": "I'm alone!",
+                "single":""
+            }
+        },
+        {
+            "characters": [
+                {
+                    "name": "Yoga girl",
+                    "skeleton": "yogaGirl_json",
+                    "atlas": "yogaGirl_atlas",
+                    "skin": "default",
+                    "scale": 0.5
+                }
+            ],
+            "correctOption": "single", 
+            "reactions": {
+                "vip": "Too expensive!",
+                "love": "I'm alone!",
+                "single":""
+            }
+        },
+        {
+            "characters": [
+                {
+                    "name": "Geek",
+                    "skeleton": "geek_json",
+                    "atlas": "geek_atlas",
+                    "skin": "default",
+                    "scale": 0.5
+                }
+            ],
+            "correctOption": "single", 
+            "reactions": {
+                "vip": "Too expensive!",
+                "love": "I'm alone!",
+                "single":""
+            }
+        },
+        {
+            "characters": [
+                {
+                    "name": "Afro Man",
+                    "skeleton": "afroMan_json",
+                    "atlas": "afroMan_atlas",
+                    "skin": "default",
+                    "scale": 0.5
+                }
+            ],
+            "correctOption": "single", 
+            "reactions": {
+                "vip": "Too expensive!",
+                "love": "I'm alone!",
+                "single":""
+            }
+        },
+        {
+            "characters": [
+                {
+                    "name": "school girl",
+                    "skeleton": "schoolgirl_json",
+                    "atlas": "schoolgirl_atlas",
+                    "skin": "default",
+                    "scale": 0.5
+                }
+            ],
+            "correctOption": "single", 
+            "reactions": {
+                "vip": "Too expensive!",
+                "love": "I'm alone!",
+                "single":""
+            }
+        },
+        {
+            "characters": [
+                {
+                    "name": "business woman",
+                    "skeleton": "businesswoman_json",
+                    "atlas": "businesswoman_atlas",
+                    "skin": "european_happy",
+                    "scale": 0.3
+                },
+                {
+                    "name": "business man",
+                    "skeleton": "businessman_json",
+                    "atlas": "businessman_atlas",
+                    "skin": "afro_happy",
+                    "scale": 0.3
+                }
+            ],
+            "correctOption": "love",
+            "reactions": {
+                "vip": "Too expensive!",
+                "single": "Not what we expected!",
+                "love": ""
+            }
+        },
+        {
+            "characters": [
+                {
+                    "name": "naomi",
+                    "skeleton": "naomi_json",
+                    "atlas": "naomi_atlas",
+                    "skin": "default",
+                    "scale": 0.3
+                }
+            ],
+            "correctOption": "vip",
+            "reactions": {
+                "single": "Not what I expected!",
+                "love": "I'm alone!",
+                "vip": ""
+            }
+        }
+    ],
+    "waiter": {
+        "name": "waiter",
+        "skeleton": "waiter_json",
+        "atlas": "waiter_atlas",
+        "skin": "mr_wolf",
+        "scale": 0.37
+    },
+    "chef": {
+        "name": "chef",
+        "skeleton": "chef_json",
+        "atlas": "chef_atlas",
+        "skin": "default",
+        "scale": 0.5
+    },
+    "clientsPosition": {
+        "middle": -180,
+        "y": 280,
+        "offset": {"x":40, "y":50}
+    },
+    "walkTime":{
+        "portrait": 2,
+        "landscape": 3
+    }
+}

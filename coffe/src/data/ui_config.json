@@ -1,0 +1,46 @@
+{
+    "buttons_config": {
+        "vip_button": {
+            "tag": "vip",
+            "skeleton": "ui_json",
+            "atlas": "ui_atlas",
+            "portraitPosition": { "x": 0.5, "y": 0.88 },
+            "portraitSize": { "width": 0.2, "height": 0.17 },
+            "landscapePosition": { "x": 0.1, "y": 0.55 },
+            "landscapeSize": { "width": 0.25, "height": 0.2 },
+            "buttonSize": { "width": 160, "height": 200 },
+            "showAnimationName": "vip",
+            "tapAnimationName": "vip_tap"
+        },
+        "single_button": {
+            "tag": "single",
+            "skeleton": "ui_json",
+            "atlas": "ui_atlas",
+            "portraitPosition": { "x": 0.8, "y": 0.88 },
+            "portraitSize": { "width": 0.2, "height": 0.17 },
+            "landscapePosition": { "x": 0.1, "y": 0.85 },
+            "landscapeSize": { "width": 0.25, "height": 0.2 },
+            "buttonSize": { "width": 160, "height": 200 },
+            "showAnimationName": "chip",
+            "tapAnimationName": "chip_tap"
+        },
+        "love_button": {
+            "tag": "love",
+            "skeleton": "ui_json",
+            "atlas": "ui_atlas",
+            "portraitPosition": { "x": 0.2, "y": 0.88 },
+            "portraitSize": { "width": 0.2, "height": 0.17 },
+            "landscapePosition": { "x": 0.1, "y": 0.25 },
+            "landscapeSize": { "width": 0.25, "height": 0.2 },
+            "buttonSize": { "width": 160, "height": 200 },
+            "showAnimationName": "love",
+            "tapAnimationName": "love_tap"
+        }
+    },
+    "background": {
+        "scale": {
+            "portrait": 1.1,
+            "landscape": 2.15
+        }
+    }
+}

@@ -1,0 +1,33 @@
+ui_spine.png
+size:607,455
+filter:Linear,Linear
+scale:0.5
+1
+bounds:365,49,90,138
+2
+bounds:457,5,90,124
+rotate:90
+3
+bounds:457,97,90,132
+rotate:90
+dots
+bounds:534,203,54,55
+rotate:90
+dots2
+bounds:534,203,54,55
+rotate:90
+fail
+bounds:2,189,264,264
+light
+bounds:2,2,201,185
+shine
+bounds:205,15,172,158
+rotate:90
+table_chip copy 2
+bounds:534,259,68,57
+table_love copy 4
+bounds:534,318,71,64
+table_vip copy 5
+bounds:534,384,71,69
+win
+bounds:268,189,264,264

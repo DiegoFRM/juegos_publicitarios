@@ -1,0 +1,9 @@
+{
+    "game_version": "1.0.22",
+    "game_title": "Cooking Diary",
+    "skip_loading_screen": true,
+    "redirect_links": {
+        "android": "https://play.google.com/store/apps/details?id=com.mytona.cookingdiary.android",
+        "ios": "https://apps.apple.com/app/cooking-diary-restaurant-game/id1214763610"
+    }
+}
