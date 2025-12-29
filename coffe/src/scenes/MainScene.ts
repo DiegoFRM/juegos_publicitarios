@@ -30,9 +30,7 @@ export default class MainScene extends Container {
     private _showContainer!: Container;
     private _logo!: ScaledSprite;
     private _downloadButton!: ScaledSprite;
-    private _vipButton!: ScaledSpineButton;
-    private _singleButton!: ScaledSpineButton;
-    private _loveButton!: ScaledSpineButton;
+    private _newOrder!: Graphics;
     private _chef!: SpineAnimation;
     private _charactersConfig: GameCharactersConfig = charactersConfig;
     private _currentClient!: ClientConfig
@@ -147,6 +145,11 @@ export default class MainScene extends Container {
         this._sceneContainer = new Container();
         this.addChild(this._sceneContainer);
 
+        this._newOrder = new Graphics().rect(230,-190,170,90).fill('red');
+        this._newOrder.alpha = 0;
+        this._newOrder.zIndex = 11;
+        assetsContainer.addChild(this._newOrder)
+
 
         this._showContainer = new Container();
         this._showContainer.position.set(window.innerWidth / 2, window.innerHeight / 2);
@@ -191,11 +194,6 @@ export default class MainScene extends Container {
         this._chef = new SpineAnimation(50, 260, { skeleton: chefData.skeleton, atlas: chefData.atlas }, true);
         this._chef.scale.set(chefData.scale);
         this._assetsContainer.addChild(this._chef);
-        //console.log('waiter animations:', this._chef.getAnimations());
-
-        this._globe = new Globe(this._chef.x - 330, this._chef.y - 260);
-        this._globe.zIndex = 10;
-        this._assetsContainer.addChild(this._globe);
 
         for (const clientData of this._charactersConfig.clients) {
             const clientAnimations: SpineAnimation[] = [];
@@ -231,14 +229,14 @@ export default class MainScene extends Container {
             character.playAnimation('walk_happy', true);
             const middlePosition = index > 0 ? this._characterPositions.middle - charactersOffset.x * 1.7 : this._characterPositions.middle * 3;
             gsap.to(character.position, {
-                x: middlePosition,
+                x: middlePosition + 60,
                 duration: this._walkTime,
                 delay: 0,
                 ease: 'none',
                 onComplete: () => {
                     character.playAnimation('happy_idle', true);
                     if (index == 0) {
-                        this._newHamburger();
+                        this.newOrder();
                         this._chef.playAnimation('4. Waving', false);
                     }
                 }
@@ -249,13 +247,30 @@ export default class MainScene extends Container {
 
 
     private _newHamburger(): void {
+
+    
         this._hamburger = new Hamburger(325, -50);
         this._hamburger.zIndex = 100;
         this._hamburger.scale.set(0.4);
         this._assetsContainer.addChild(this._hamburger)
         this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
         
-                        this._moveHamburger();
+    }
+
+    private newOrder():void{
+
+        this._globe = new Globe(this._chef.x - 350, this._chef.y - 300);  
+        this._globe.zIndex = 10;
+        this._assetsContainer.addChild(this._globe);
+        this._globe.show()
+
+        this._newOrder.cursor = 'pointer';
+        this._newOrder.eventMode = 'static';
+        this._newOrder.on('pointerdown',()=>{
+            this._newHamburger();
+            this._moveHamburger();
+        })
+        
     }
 
     private _moveHamburger(): void {
@@ -328,9 +343,7 @@ export default class MainScene extends Container {
             this._gamePassed = false;
             finishAnimation = this._currentClient.characters[0].name == 'naomi' ? 'negative' : 'happy_idle';
             this._chef.playAnimation('3. sad_action', false)
-            const stringToShow = this._currentClient.reactions.hasOwnProperty(optionSelected) ?
-                this._currentClient.reactions[optionSelected] : '';
-            this._globe.show(stringToShow);
+            this._globe.show();
         }
         const reactionTime = currentCharacters[0].getAnimationDuration(finishAnimation);
         currentCharacters.forEach((character, index) => {
@@ -402,26 +415,35 @@ export default class MainScene extends Container {
     }
 
     private _createButtons(): void {
-        const button1 = new Graphics().rect(-180, 30, 100, 100).fill('red');
+        const button1 = new Sprite(Assets.get('button1'))
         this._assetsContainer.addChild(button1)
-        button1.zIndex = 20;
+        button1.anchor.set(0.5);
+        button1.x = -130;
+        button1.y = 110;
+        button1.zIndex = 1;
         button1.eventMode = 'static';
         button1.cursor = 'pointer';
-        button1.alpha = 0;
+        button1.alpha = 1;
 
-        const button2 = new Graphics().rect(-40, 30, 100, 100).fill('red');
+        const button2 = new Sprite(Assets.get('button2'))
         this._assetsContainer.addChild(button2);
-        button2.zIndex = 20;
+        button2.anchor.set(0.5);
+        button2.x = 5;
+        button2.y = 110;
+        button2.zIndex = 1;
         button2.eventMode = 'static';
         button2.cursor = 'pointer';
-        button2.alpha = 0;
+        button2.alpha = 1;
 
-        const button3 = new Graphics().rect(90, 30, 100, 100).fill('red');
+        const button3 = new Sprite(Assets.get('button3'))
         this._assetsContainer.addChild(button3);
-        button3.zIndex = 20;
+        button3.anchor.set(0.5);
+        button3.x = 140;
+        button3.y = 110;
+        button3.zIndex = 1;
         button3.eventMode = 'static';
         button3.cursor = 'pointer';
-        button3.alpha = 0;
+        button3.alpha = 1;
 
         button1.on("pointerdown", () => {
             this._chesse = true;

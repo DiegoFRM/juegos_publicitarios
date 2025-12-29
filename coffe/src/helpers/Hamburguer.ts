@@ -56,6 +56,11 @@ export default class Hamburger extends Container {
         }
     }
 
+    public orderBurger(meatSelect:boolean,lettuceSelect:boolean,chesseSelect:boolean):void{
+        this._tray.alpha = 0;
+        this.createHamburger(meatSelect,lettuceSelect,chesseSelect)
+    }
+
     public startMakeHB():void{
         this.eventMode = 'static';
         this.cursor = 'pointer';

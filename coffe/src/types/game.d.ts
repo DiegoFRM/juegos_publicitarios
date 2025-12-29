@@ -32,7 +32,6 @@ type ClientConfig = {
 
 type GameCharactersConfig = {
     clients: ClientConfig[];
-    waiter: CharacterConfig;
     chef: CharacterConfig;
     clientsPosition:{
         y: number;

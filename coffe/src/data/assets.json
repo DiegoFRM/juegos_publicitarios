@@ -33,36 +33,12 @@
           "src": "assets/bitmapFonts/futuraPTBold.fnt"
         },
         {
-          "alias": "businesswoman_json",
-          "src": "assets/spineAnimations/BusinessWoman/European.json"
-        },
-        {
-          "alias": "businesswoman_atlas",
-          "src": "assets/spineAnimations/BusinessWoman/European.atlas"
-        },
-        {
           "alias": "ui_atlas",
           "src": "assets/spineAnimations/UI/ui_spine.atlas"
         },
         {
           "alias": "ui_json",
           "src": "assets/spineAnimations/UI/ui_spine.json"
-        },
-        {
-          "alias": "businessman_json",
-          "src": "assets/spineAnimations/BusinessMan/Afro.json"
-        },
-        {
-          "alias": "businessman_atlas",
-          "src": "assets/spineAnimations/BusinessMan/Afro.atlas"
-        },
-        {
-          "alias": "waiter_json",
-          "src": "assets/spineAnimations/MrWolf/mr_wolf.json"
-        },
-        {
-          "alias": "waiter_atlas",
-          "src": "assets/spineAnimations/MrWolf/Mr_Wolf_playable.atlas"
         },
         {
           "alias": "chef_json",
@@ -105,22 +81,6 @@
           "src": "assets/spineAnimations/AfroMan/European.atlas"
         },
         {
-          "alias": "naomi_json",
-          "src": "assets/spineAnimations/Naomi/Naomi.json"
-        },
-        {
-          "alias": "naomi_atlas",
-          "src": "assets/spineAnimations/Naomi/Naomi.atlas"
-        },
-        {
-          "alias": "schoolgirl_json",
-          "src": "assets/spineAnimations/SchoolGirl/European.json"
-        },
-        {
-          "alias": "schoolgirl_atlas",
-          "src": "assets/spineAnimations/SchoolGirl/European.atlas"
-        },
-        {
           "alias": "tray",
           "src": "assets/sprites/tray.png"
         },
@@ -147,6 +107,18 @@
         {
           "alias": "tray",
           "src": "assets/sprites/tray.png"
+        },
+        {
+          "alias": "button1",
+          "src": "assets/sprites/button1.webp"
+        },
+        {
+          "alias": "button2",
+          "src": "assets/sprites/button2.webp"
+        },
+        {
+          "alias": "button3",
+          "src": "assets/sprites/button3.webp"
         },
         {
           "alias": "conveyor_0",
