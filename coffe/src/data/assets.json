@@ -1,153 +1,339 @@
 {
-    "bundles": [
+  "bundles": [
+    {
+      "name": "load-screen",
+      "assets": [
         {
-            "name": "load-screen",
-            "assets": [
-                {
-                    "alias":"loading_atlas",
-                    "src":"assets/atlas/loading_atlas.json"
-                },
-                {
-                    "alias":"grobold",
-                    "src":"assets/bitmapFonts/grobold.fnt"
-                }
-            ]
+          "alias": "loading_atlas",
+          "src": "assets/atlas/loading_atlas.json"
         },
         {
-            "name":"game-screen",
-            "assets": [
-                {
-                    "alias":"merge",
-                    "src":"assets/bitmapFonts/merge.fnt"
-                },
-                {
-                    "alias":"game_atlas",
-                    "src":"assets/atlas/game_atlas.json"
-                },
-                {
-                    "alias":"background",
-                    "src":"assets/sprites/background.png"
-                },
-                {
-                    "alias":"futura_bold",
-                    "src":"assets/bitmapFonts/futuraPTBold.fnt"
-                },
-                {
-                    "alias":"businesswoman_json",
-                    "src":"assets/spineAnimations/BusinessWoman/European.json"
-                },
-                {
-                    "alias":"businesswoman_atlas",
-                    "src":"assets/spineAnimations/BusinessWoman/European.atlas"
-                },
-                {
-                    "alias":"ui_atlas",
-                    "src":"assets/spineAnimations/UI/ui_spine.atlas"
-                },
-                {
-                    "alias":"ui_json",
-                    "src":"assets/spineAnimations/UI/ui_spine.json"
-                },
-                {
-                    "alias":"businessman_json",
-                    "src":"assets/spineAnimations/BusinessMan/Afro.json"
-                },
-                {
-                    "alias":"businessman_atlas",
-                    "src":"assets/spineAnimations/BusinessMan/Afro.atlas"
-                },
-                {
-                    "alias":"waiter_json",
-                    "src":"assets/spineAnimations/MrWolf/mr_wolf.json"
-                },
-                {
-                    "alias":"waiter_atlas",
-                    "src":"assets/spineAnimations/MrWolf/Mr_Wolf_playable.atlas"
-                },
-                {
-                    "alias":"chef_json",
-                    "src":"assets/spineAnimations/grandpa/skeleton.json"
-                },
-                {
-                    "alias":"chef_atlas",
-                    "src":"assets/spineAnimations/grandpa/skeleton.atlas"
-                },
-                {
-                    "alias":"prettyWoman_json",
-                    "src":"assets/spineAnimations/PrettyWoman/Latina.json"
-                },
-                {
-                    "alias":"prettyWoman_atlas",
-                    "src":"assets/spineAnimations/PrettyWoman/Latina.atlas"
-                },
-                {
-                    "alias":"yogaGirl_json",
-                    "src":"assets/spineAnimations/YogaGirl/Afro.json"
-                },
-                {
-                    "alias":"yogaGirl_atlas",
-                    "src":"assets/spineAnimations/YogaGirl/Afro.atlas"
-                },
-                {
-                    "alias":"geek_json",
-                    "src":"assets/spineAnimations/Geek/European.json"
-                },
-                {
-                    "alias":"geek_atlas",
-                    "src":"assets/spineAnimations/Geek/European.atlas"
-                },
-                {
-                    "alias":"afroMan_json",
-                    "src":"assets/spineAnimations/AfroMan/European.json"
-                },
-                {
-                    "alias":"afroMan_atlas",
-                    "src":"assets/spineAnimations/AfroMan/European.atlas"
-                },
-                {
-                    "alias":"naomi_json",
-                    "src":"assets/spineAnimations/Naomi/Naomi.json"
-                },
-                {
-                    "alias":"naomi_atlas",
-                    "src":"assets/spineAnimations/Naomi/Naomi.atlas"
-                },
-                {
-                    "alias":"schoolgirl_json",
-                    "src":"assets/spineAnimations/SchoolGirl/European.json"
-                },
-                {
-                    "alias":"schoolgirl_atlas",
-                    "src":"assets/spineAnimations/SchoolGirl/European.atlas"
-                },
-                {
-                    "alias":"tray",
-                    "src":"assets/sprites/tray.png"
-                },
-                {
-                    "alias":"hb_bottom",
-                    "src":"assets/sprites/hb_bottom.png"
-                },
-                {
-                    "alias":"hb_top",
-                    "src":"assets/sprites/hb_top.png"
-                },
-                {
-                    "alias":"lettuce",
-                    "src":"assets/sprites/lettuce.png"
-                },
-                {
-                    "alias":"meat",
-                    "src":"assets/sprites/meat.png"
-                },
-                {
-                    "alias":"chesse",
-                    "src":"assets/sprites/chesse.png"
-                }
-            ]
+          "alias": "grobold",
+          "src": "assets/bitmapFonts/grobold.fnt"
         }
-    ],
-    "sounds": [
-
-    ]
+      ]
+    },
+    {
+      "name": "game-screen",
+      "assets": [
+        {
+          "alias": "merge",
+          "src": "assets/bitmapFonts/merge.fnt"
+        },
+        {
+          "alias": "game_atlas",
+          "src": "assets/atlas/game_atlas.json"
+        },
+        {
+          "alias": "background",
+          "src": "assets/sprites/background.png"
+        },
+        {
+          "alias": "futura_bold",
+          "src": "assets/bitmapFonts/futuraPTBold.fnt"
+        },
+        {
+          "alias": "businesswoman_json",
+          "src": "assets/spineAnimations/BusinessWoman/European.json"
+        },
+        {
+          "alias": "businesswoman_atlas",
+          "src": "assets/spineAnimations/BusinessWoman/European.atlas"
+        },
+        {
+          "alias": "ui_atlas",
+          "src": "assets/spineAnimations/UI/ui_spine.atlas"
+        },
+        {
+          "alias": "ui_json",
+          "src": "assets/spineAnimations/UI/ui_spine.json"
+        },
+        {
+          "alias": "businessman_json",
+          "src": "assets/spineAnimations/BusinessMan/Afro.json"
+        },
+        {
+          "alias": "businessman_atlas",
+          "src": "assets/spineAnimations/BusinessMan/Afro.atlas"
+        },
+        {
+          "alias": "waiter_json",
+          "src": "assets/spineAnimations/MrWolf/mr_wolf.json"
+        },
+        {
+          "alias": "waiter_atlas",
+          "src": "assets/spineAnimations/MrWolf/Mr_Wolf_playable.atlas"
+        },
+        {
+          "alias": "chef_json",
+          "src": "assets/spineAnimations/grandpa/skeleton.json"
+        },
+        {
+          "alias": "chef_atlas",
+          "src": "assets/spineAnimations/grandpa/skeleton.atlas"
+        },
+        {
+          "alias": "prettyWoman_json",
+          "src": "assets/spineAnimations/PrettyWoman/Latina.json"
+        },
+        {
+          "alias": "prettyWoman_atlas",
+          "src": "assets/spineAnimations/PrettyWoman/Latina.atlas"
+        },
+        {
+          "alias": "yogaGirl_json",
+          "src": "assets/spineAnimations/YogaGirl/Afro.json"
+        },
+        {
+          "alias": "yogaGirl_atlas",
+          "src": "assets/spineAnimations/YogaGirl/Afro.atlas"
+        },
+        {
+          "alias": "geek_json",
+          "src": "assets/spineAnimations/Geek/European.json"
+        },
+        {
+          "alias": "geek_atlas",
+          "src": "assets/spineAnimations/Geek/European.atlas"
+        },
+        {
+          "alias": "afroMan_json",
+          "src": "assets/spineAnimations/AfroMan/European.json"
+        },
+        {
+          "alias": "afroMan_atlas",
+          "src": "assets/spineAnimations/AfroMan/European.atlas"
+        },
+        {
+          "alias": "naomi_json",
+          "src": "assets/spineAnimations/Naomi/Naomi.json"
+        },
+        {
+          "alias": "naomi_atlas",
+          "src": "assets/spineAnimations/Naomi/Naomi.atlas"
+        },
+        {
+          "alias": "schoolgirl_json",
+          "src": "assets/spineAnimations/SchoolGirl/European.json"
+        },
+        {
+          "alias": "schoolgirl_atlas",
+          "src": "assets/spineAnimations/SchoolGirl/European.atlas"
+        },
+        {
+          "alias": "tray",
+          "src": "assets/sprites/tray.png"
+        },
+        {
+          "alias": "hb_bottom",
+          "src": "assets/sprites/hb_bottom.png"
+        },
+        {
+          "alias": "hb_top",
+          "src": "assets/sprites/hb_top.png"
+        },
+        {
+          "alias": "lettuce",
+          "src": "assets/sprites/lettuce.png"
+        },
+        {
+          "alias": "meat",
+          "src": "assets/sprites/meat.png"
+        },
+        {
+          "alias": "chesse",
+          "src": "assets/sprites/chesse.png"
+        },
+        {
+          "alias": "tray",
+          "src": "assets/sprites/tray.png"
+        },
+        {
+          "alias": "conveyor_0",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00000.png"
+        },
+        {
+          "alias": "conveyor_1",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00001.png"
+        },
+        {
+          "alias": "conveyor_2",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00002.png"
+        },
+        {
+          "alias": "conveyor_3",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00003.png"
+        },
+        {
+          "alias": "conveyor_4",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00004.png"
+        },
+        {
+          "alias": "conveyor_5",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00005.png"
+        },
+        {
+          "alias": "conveyor_6",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00006.png"
+        },
+        {
+          "alias": "conveyor_7",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00007.png"
+        },
+        {
+          "alias": "conveyor_8",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00008.png"
+        },
+        {
+          "alias": "conveyor_9",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00009.png"
+        },
+        {
+          "alias": "conveyor_10",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00010.png"
+        },
+        {
+          "alias": "conveyor_11",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00011.png"
+        },
+        {
+          "alias": "conveyor_12",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00012.png"
+        },
+        {
+          "alias": "conveyor_13",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00013.png"
+        },
+        {
+          "alias": "conveyor_14",
+          "src": "/assets/sprites/conveyor_red/ConveyorRed_00014.png"
+        },
+        {
+          "alias": "conveyorUpgrade_0",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00450.png"
+        },
+        {
+          "alias": "conveyorUpgrade_1",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00451.png"
+        },
+        {
+          "alias": "conveyorUpgrade_2",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00452.png"
+        },
+        {
+          "alias": "conveyorUpgrade_3",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00453.png"
+        },
+        {
+          "alias": "conveyorUpgrade_4",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00454.png"
+        },
+        {
+          "alias": "conveyorUpgrade_5",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00455.png"
+        },
+        {
+          "alias": "conveyorUpgrade_6",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00456.png"
+        },
+        {
+          "alias": "conveyorUpgrade_7",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00457.png"
+        },
+        {
+          "alias": "conveyorUpgrade_8",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00458.png"
+        },
+        {
+          "alias": "conveyorUpgrade_9",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00459.png"
+        },
+        {
+          "alias": "conveyorUpgrade_10",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00460.png"
+        },
+        {
+          "alias": "conveyorUpgrade_11",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00461.png"
+        },
+        {
+          "alias": "conveyorUpgrade_12",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00462.png"
+        },
+        {
+          "alias": "conveyorUpgrade_13",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00463.png"
+        },
+        {
+          "alias": "conveyorUpgrade_14",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00464.png"
+        },
+        {
+          "alias": "conveyorUpgrade_15",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00465.png"
+        },
+        {
+          "alias": "conveyorUpgrade_16",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00466.png"
+        },
+        {
+          "alias": "conveyorUpgrade_17",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00467.png"
+        },
+        {
+          "alias": "conveyorUpgrade_18",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00468.png"
+        },
+        {
+          "alias": "conveyorUpgrade_19",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00469.png"
+        },
+        {
+          "alias": "conveyorUpgrade_20",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00470.png"
+        },
+        {
+          "alias": "conveyorUpgrade_21",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00471.png"
+        },
+        {
+          "alias": "conveyorUpgrade_22",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00472.png"
+        },
+        {
+          "alias": "conveyorUpgrade_23",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00473.png"
+        },
+        {
+          "alias": "conveyorUpgrade_24",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00474.png"
+        },
+        {
+          "alias": "conveyorUpgrade_25",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00475.png"
+        },
+        {
+          "alias": "conveyorUpgrade_26",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00476.png"
+        },
+        {
+          "alias": "conveyorUpgrade_27",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00477.png"
+        },
+        {
+          "alias": "conveyorUpgrade_28",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00478.png"
+        },
+        {
+          "alias": "conveyorUpgrade_29",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00479.png"
+        },
+        {
+          "alias": "conveyorUpgrade_30",
+          "src": "/assets/sprites/conveyor_upgrade/ConveyorUpgrade_00480.png"
+        }
+      ]
+    }
+  ],
+  "sounds": []
 }

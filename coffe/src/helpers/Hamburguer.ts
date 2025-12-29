@@ -8,6 +8,7 @@ export default class Hamburger extends Container {
     private _lettuce!:Sprite
     private _meat!:Sprite
     private _chesse!:Sprite
+    private _tray!:Sprite
 
     constructor(x: number, y: number) {
         super();
@@ -16,6 +17,11 @@ export default class Hamburger extends Container {
     }
 
     private _newHamburger():void{
+        this._tray = new Sprite(Assets.get('tray'));
+        this._tray.anchor.set(0.5, 0.2);
+        this._tray.scale.set(3.5);
+        this.addChild(this._tray);
+
         this._hbBottom = new Sprite(Assets.get('hb_bottom'));
         this._hbBottom.anchor.set(0.5, 0.5);
         this.addChild(this._hbBottom);
@@ -29,11 +35,11 @@ export default class Hamburger extends Container {
         this.addChild(this._meat);
 
         this._chesse = new Sprite(Assets.get('chesse'));
-        this._chesse.anchor.set(0.5, 0.5);
+        this._chesse.anchor.set(0.5, 0.3);
         this.addChild(this._chesse);
 
         this._hbTop = new Sprite(Assets.get('hb_top'));
-        this._hbTop.anchor.set(0.5, 0.5);
+        this._hbTop.anchor.set(0.5, 0.3);
         this.addChild(this._hbTop);
     }
 
@@ -41,6 +47,21 @@ export default class Hamburger extends Container {
         this._lettuce.alpha = lettuceSelect ? 1 : 0;
         this._meat.alpha = meatSelect ? 1 : 0;
         this._chesse.alpha = chesseSelect ? 1 : 0;
+        if(this._meat.alpha == 1){
+            this._hbTop.anchor.set(0.5, 0.5);
+        }
+         if(this._meat.alpha == 1 && this._chesse.alpha == 1){
+            this._hbTop.anchor.set(0.5, 0.5);
+            this._chesse.anchor.set(0.5, 0.5);
+        }
+    }
+
+    public startMakeHB():void{
+        this.eventMode = 'static';
+        this.cursor = 'pointer';
+        this.on('pointerdown', () => {
+            
+        })
     }
 
 }

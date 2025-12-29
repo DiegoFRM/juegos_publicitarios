@@ -11,6 +11,9 @@ import FinalScreen from '../helpers/FinalScreen';
 import TutorialHand from '../helpers/TutorialHand';
 import PlatformRedirect from '../helpers/PlatformRedirect';
 import gsap from 'gsap';
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import Conveyor from '../helpers/Conveyor';
+
 
 import charactersConfig from '../data/characters_config.json';
 import gameConfig from '../data/game_config.json';
@@ -21,7 +24,7 @@ import eventsSystem from '../helpers/EventsSystem';
 export default class MainScene extends Container {
     private _background!: Sprite;
     private _assetsContainer!: ScaledContainer;
-    private _table!: Sprite;
+    private _conveyor!: Conveyor;
     private _basicAnimations: BasicAnimations;
     private _sceneContainer!: Container;
     private _showContainer!: Container;
@@ -35,6 +38,9 @@ export default class MainScene extends Container {
     private _currentClient!: ClientConfig
     private _globe!: Globe;
     private _hamburger!: Hamburger;
+    private _meat: boolean = false;
+    private _lettuce: boolean = false;
+    private _chesse: boolean = false;
     private _finalScreen!: FinalScreen;
     private _blurFilter!: BlurFilter;
     private _tutorialHand!: TutorialHand;
@@ -121,8 +127,8 @@ export default class MainScene extends Container {
     private _create(): void {
 
         const assetsContainer = new ScaledContainer();
-        assetsContainer.scaler.setPortraitScreenPosition(0.5, 0.5);
-        assetsContainer.scaler.setPortraitScreenSize(1, 1);
+        assetsContainer.scaler.setPortraitScreenPosition(0.6, 0.5);
+        assetsContainer.scaler.setPortraitScreenSize(1.4, 1.4);
         assetsContainer.scaler.setLandscapeScreenPosition(0.5, 0.7);
         assetsContainer.scaler.setLandscapeScreenSize(1, 1);
         this.addChild(assetsContainer);
@@ -134,11 +140,9 @@ export default class MainScene extends Container {
         this._background.position.set(0, 0);
         assetsContainer.addChild(this._background);
 
-        this._table = new Sprite(Assets.get('table1'))
-        this._table.anchor.set(0.5, 0.4);
-        this._table.position.set(0, 0);
-        this._table.zIndex = 10;
-        assetsContainer.addChild(this._table);
+        this._conveyor = new Conveyor(0,0)
+        this._conveyor.zIndex = 10;
+        assetsContainer.addChild(this._conveyor);
 
         this._sceneContainer = new Container();
         this.addChild(this._sceneContainer);
@@ -193,13 +197,6 @@ export default class MainScene extends Container {
         this._globe.zIndex = 10;
         this._assetsContainer.addChild(this._globe);
 
-        this._hamburger = new Hamburger(0,170);
-        this._hamburger.zIndex = 100;
-        this._hamburger.scale.set(0.5);
-        this._assetsContainer.addChild(this._hamburger)
-        this._hamburger.createHamburger(true,false,false)
-        
-
         for (const clientData of this._charactersConfig.clients) {
             const clientAnimations: SpineAnimation[] = [];
             for (const characterData of clientData.characters) {
@@ -229,7 +226,7 @@ export default class MainScene extends Container {
         this._currentCharacters.forEach((character, index) => {
             character.position.set(this._characterPositions.from, this._charactersConfig.clientsPosition.y);
             index > 0 && character.position.set(character.position.x - charactersOffset.x, character.position.y +
-                charactersOffset.y * index );
+                charactersOffset.y * index);
             character.alpha = 1;
             character.playAnimation('walk_happy', true);
             const middlePosition = index > 0 ? this._characterPositions.middle - charactersOffset.x * 1.7 : this._characterPositions.middle * 3;
@@ -241,16 +238,70 @@ export default class MainScene extends Container {
                 onComplete: () => {
                     character.playAnimation('happy_idle', true);
                     if (index == 0) {
-                        this._showButtons();
+                        this._newHamburger();
                         this._chef.playAnimation('4. Waving', false);
                     }
                 }
             });
         });
+    };
+
+
+
+    private _newHamburger(): void {
+        this._hamburger = new Hamburger(325, -50);
+        this._hamburger.zIndex = 100;
+        this._hamburger.scale.set(0.4);
+        this._assetsContainer.addChild(this._hamburger)
+        this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+        
+                        this._moveHamburger();
     }
 
-    private _newHamburger():void{
+    private _moveHamburger(): void {
+        gsap.registerPlugin(MotionPathPlugin)
 
+        gsap.to(this._hamburger,
+            {
+                motionPath: {
+                    path: [{ x: 325, y: -50 }, { x: 325, y: 130 }, { x: 250, y: 165 }],
+
+                },
+                ease:'none',
+                duration: 1,
+                onComplete: () => {
+                    gsap.to(this._hamburger,
+                        {
+                         x:0,
+                            duration: 2,
+                            onComplete: () => {
+                                this._selectElementScale(this._hamburger)
+                            }
+                        })
+                }
+            })
+    }
+
+    private _selectElementScale(element:any):void{
+        gsap.to(element,{
+            width:element.width + 10,
+            height:element.height + 10,
+            yoyo:true,
+            repeat:-1
+        })
+    }
+
+    private _tutorialHamburger(): void {
+        gsap.registerPlugin(MotionPathPlugin)
+
+        gsap.to(this._hamburger,
+            {
+                motionPath: {
+                    path: [{ x: 325, y: -50 }, { x: 325, y: 150 }, { x: 0, y: 170 }],
+
+                },
+                duration: 5,
+            })
     }
 
     private _goToNextClient(): void {
@@ -317,41 +368,9 @@ export default class MainScene extends Container {
         });
     }
 
-    private _showButtons(): void {
-        const appearButtonsDelay = this._gameButtons.length * 0.2;
-        if (this._clientIndex > 0) {
-            this._tutorialTimer = gsap.delayedCall(this._tutorialTimerSeconds, () => {
-                this._tutorialTimer = null;
-                this._tutorialHand.showTutorialObjects(this._gameButtons);
-            });
-        } else {
-            this._tutorialTimer = gsap.delayedCall(appearButtonsDelay + 0.5, () => {
-                this._tutorialTimer = null;
-                this._tutorialHand.showTutorialObjects(this._gameButtons);
-            });
-        }
-        this._gameButtons.forEach((button, index) => {
-            gsap.delayedCall(index * 0.2, button.playShowAnimation.bind(button));
-        });
 
-        gsap.delayedCall(appearButtonsDelay, () => {
-            this._gameButtons.forEach((button) => {
-                button.eventMode = 'static';
-            });
-        });
-    }
 
-    private _hideButtons(): void {
-        this._gameButtons.forEach((button) => {
-            gsap.to(button, { alpha: 0, duration: 0.5 });
-        });
-    }
 
-    private _deactivateButtons(): void {
-        this._gameButtons.forEach((button) => {
-            button.eventMode = 'none';
-        });
-    }
 
     private _createUI(): void {
 
@@ -383,20 +402,54 @@ export default class MainScene extends Container {
     }
 
     private _createButtons(): void {
+        const button1 = new Graphics().rect(-180, 30, 100, 100).fill('red');
+        this._assetsContainer.addChild(button1)
+        button1.zIndex = 20;
+        button1.eventMode = 'static';
+        button1.cursor = 'pointer';
+        button1.alpha = 0;
 
-        const buttonsConfig: ButtonsConfig = uiConfig.buttons_config;
+        const button2 = new Graphics().rect(-40, 30, 100, 100).fill('red');
+        this._assetsContainer.addChild(button2);
+        button2.zIndex = 20;
+        button2.eventMode = 'static';
+        button2.cursor = 'pointer';
+        button2.alpha = 0;
 
-        this._loveButton = new ScaledSpineButton(0, 0, buttonsConfig.love_button);
-        this.addChild(this._loveButton);
-        this._gameButtons.push(this._loveButton);
+        const button3 = new Graphics().rect(90, 30, 100, 100).fill('red');
+        this._assetsContainer.addChild(button3);
+        button3.zIndex = 20;
+        button3.eventMode = 'static';
+        button3.cursor = 'pointer';
+        button3.alpha = 0;
 
-        this._vipButton = new ScaledSpineButton(0, 0, buttonsConfig.vip_button);
-        this.addChild(this._vipButton);
-        this._gameButtons.push(this._vipButton);
+        button1.on("pointerdown", () => {
+            this._chesse = true;
+            this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+        });
 
-        this._singleButton = new ScaledSpineButton(0, 0, buttonsConfig.single_button);
-        this.addChild(this._singleButton);
-        this._gameButtons.push(this._singleButton);
+        button2.on("pointerdown", () => {
+            this._meat = true;
+            this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+        });
+
+
+        button3.on("pointerdown", () => {
+            this._lettuce = true;
+            this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+        });
+
+    }
+
+    private _showButtons(): void {
+
+    }
+
+    private _hideButtons(): void {
+
+    }
+
+    private _deactivateButtons(): void {
 
     }
 
@@ -416,9 +469,6 @@ export default class MainScene extends Container {
     private _resizeUI(width: number, height: number): void {
         this._logo.scaler.resize(width, height);
         this._downloadButton.scaler.resize(width, height);
-        this._vipButton.scaler.resize(width, height);
-        this._singleButton.scaler.resize(width, height);
-        this._loveButton.scaler.resize(width, height);
         this._finalScreen.resize(width, height);
         this._tutorialHand.resize(width, height);
     }
