@@ -6,6 +6,7 @@ export default class Conveyor extends Container {
     private _conveyorRed: Array<string> = [];
     private _conveyorUpgrade: Array<string> = [];
     private _anim:any
+    private _highlight!:Sprite;
 
     constructor(x: number, y: number) {
         super();
@@ -36,6 +37,10 @@ export default class Conveyor extends Container {
         }
 
         this.addChild(this._anim)
+        this._highlight = new Sprite(Assets.get('highlight'));
+        this._highlight.anchor.set(0.5);
+        this._highlight.y = 200;
+        this.addChild(this._highlight)
     }
 
         private async _conveyorUpgradeAnimation() {

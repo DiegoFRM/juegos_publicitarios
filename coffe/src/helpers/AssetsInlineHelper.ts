@@ -19,6 +19,12 @@ import button1 from '../assets/sprites/button1.webp?url';
 import button2 from '../assets/sprites/button2.webp?url';
 import button3 from '../assets/sprites/button3.webp?url';
 
+import coin from '../assets/sprites/coin.webp?url';
+import count from '../assets/sprites/count.webp?url';
+import barcoin from '../assets/sprites/barcoin.webp?url';
+import highlight from '../assets/sprites/highlight.webp?url';
+import buttonUpgrade from '../assets/sprites/upgrade.webp?url';
+
 //IMAGES
 import conveyor_0 from '../assets/sprites/conveyor_red/ConveyorRed_00000.png?url'
 import conveyor_1 from '../assets/sprites/conveyor_red/ConveyorRed_00001.png?url'
@@ -181,6 +187,26 @@ export default class AssetsInlineHelper {
                         {
                             alias: 'button3',
                             src: button3,
+                        },
+                        {
+                            alias: 'coin',
+                            src: coin,
+                        },
+                        {
+                            alias: 'barcoin',
+                            src: barcoin,
+                        },
+                        {
+                            alias: 'count',
+                            src: count,
+                        },
+                        {
+                            alias: 'highlight',
+                            src: highlight,
+                        },
+                        {
+                            alias: 'buttonUpgrade',
+                            src: buttonUpgrade,
                         },
                         {
                             alias: 'conveyor_0',
