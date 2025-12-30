@@ -48,8 +48,8 @@ export default class MainScene extends Container {
     private _maskCount!: Graphics
     private _textCoin!: ScaledText
     private _countCoin: number = 0;
-    private _buttonUpgrade!:Sprite;
-
+    private _buttonUpgrade!: Sprite;
+    private _countFails:number = 0;
     private _animation!: GSAPAnimation;
     private _finalScreen!: FinalScreen;
     private _blurFilter!: BlurFilter;
@@ -75,19 +75,23 @@ export default class MainScene extends Container {
     private _gamePassed: boolean = true;
     private _isFirstTime: boolean = true;
     private _screenCharactersOffset: number = 60;
+    private _button1!: Sprite;
+    private _button2!: Sprite;
+    private _button3!: Sprite;
     private _orders: Array<any> = [
         { a: true, b: false, c: true },
         { a: true, b: true, c: true },
         { a: true, b: false, c: true },
-        { a: true, b: false, c: true }
+        { a: true, b: false, c: true },
+        { a: true, b: true, c: true }
     ]
+    private _makeHamburger: Array<boolean> = [true, false, true];
 
     constructor(app: Application, basicAnimations: BasicAnimations) {
         super();
         app.stage.addChild(this);
         this._basicAnimations = basicAnimations;
         this._setBackgroundScaleValue(uiConfig.background);
-        this._addEvents();
         this._create();
         this._createBlurFilter();
         this._update(app)
@@ -115,25 +119,6 @@ export default class MainScene extends Container {
         return window.innerWidth < window.innerHeight;
     }
 
-    private _addEvents(): void {
-        eventsSystem.on('pressButton', this._pressButton.bind(this));
-    }
-
-    private _pressButton(buttonTag: string, animationDuration: number = 0): void {
-        if (this._isActive) {
-            this._tutorialTimer && this._tutorialTimer.kill();
-            this._tutorialTimer = null;
-            if (this._isFirstTime) {
-                this._tutorialHand.cancelTutorial();
-                this._isFirstTime = false;
-            } else {
-                this._tutorialHand.running && this._tutorialHand.cancelTutorial();
-            }
-            this._finishCharacter(buttonTag == this._currentClient.correctOption);
-            this._deactivateButtons();
-            gsap.delayedCall(animationDuration * 1.5, this._hideButtons.bind(this));
-        }
-    }
 
     public get active(): boolean {
         return this._isActive;
@@ -147,8 +132,8 @@ export default class MainScene extends Container {
         const assetsContainer = new ScaledContainer();
         assetsContainer.scaler.setPortraitScreenPosition(0.6, 0.5);
         assetsContainer.scaler.setPortraitScreenSize(1.4, 1.4);
-        assetsContainer.scaler.setLandscapeScreenPosition(0.5, 0.7);
-        assetsContainer.scaler.setLandscapeScreenSize(1, 1);
+        assetsContainer.scaler.setLandscapeScreenPosition(0.5, 0.55);
+        assetsContainer.scaler.setLandscapeScreenSize(1, 1.7);
         this.addChild(assetsContainer);
         this._assetsContainer = assetsContainer;
 
@@ -171,14 +156,14 @@ export default class MainScene extends Container {
         assetsContainer.addChild(this._newOrder)
 
         this._tutorialOrder = new Graphics().rect(230, -190, 170, 90).fill('red');
-        this._tutorialOrder.alpha = 0.4;
+        this._tutorialOrder.alpha = 0;
         this._tutorialOrder.zIndex = 11;
         assetsContainer.addChild(this._tutorialOrder);
 
         this._count = new Sprite(Assets.get('count'));
         this._count.anchor.set(0.5);
         this._count.scale.set(1.5)
-        this._count.y = -400;
+        this._count.y = -330;
         this._count.zIndex = 10;
         assetsContainer.addChild(this._count);
 
@@ -188,17 +173,33 @@ export default class MainScene extends Container {
         this._buttonUpgrade.zIndex = 11;
         this._buttonUpgrade.alpha = 0;
         assetsContainer.addChild(this._buttonUpgrade);
+        this._buttonUpgrade.on('pointerdown', () => {
+            this._chef.playAnimation('2. happy_action', false);
+            this._conveyor.conveyorUpgradeAnimation();
+            this._buttonUpgrade.eventMode = 'static';
+            this._buttonUpgrade.cursor = 'none';
+            gsap.to(this._chef, {
+                alpha: 1, duration: 1, onComplete: () => {
+                    gsap.to(this._logo, { alpha: 0, duration: 0.5 });
+                    gsap.to(this._downloadButton, { alpha: 0, duration: 0.5 });
+                    console.log('Finished game');
+                    this._finalScreen.show(this._gamePassed);
+                    this._addBlur();
+                    window.parent && window.parent.postMessage && window.parent.postMessage('complete', '*');
+                }
+            })
+        })
 
 
 
-        this._maskCount = new Graphics().rect(-530, -450, 400, 100).fill('red');
+        this._maskCount = new Graphics().rect(-530, -370, 400, 100).fill('red');
         this._maskCount.zIndex = 10;
         this._maskCount.alpha = 1;
 
         this._barcoin = new Sprite(Assets.get('barcoin'));
         this._barcoin.anchor.set(0.5, 0.5);
         this._barcoin.scale.set(1.5)
-        this._barcoin.y = -400;
+        this._barcoin.y = -330;
         this._barcoin.mask = this._maskCount;
         this._barcoin.x = 50;
         this._barcoin.zIndex = 10;
@@ -216,7 +217,7 @@ export default class MainScene extends Container {
         this._textCoin.zIndex = 11;
         this._textCoin.anchor.set(0.5, 0.5);
         this._textCoin.x = this._count.x + 40
-        this._textCoin.y = this._count.y
+        this._textCoin.y = this._count.y 
         assetsContainer.addChild(this._textCoin);
 
 
@@ -253,33 +254,53 @@ export default class MainScene extends Container {
     private async _update(app: Application) {
         app.ticker.add(() => {
 
-            if(this._countCoin == 500){
-                this._buttonUpgrade.alpha = 1;
-                gsap.fromTo(this._buttonUpgrade.scale,{
-                    x:0,
-                    y:0
-                },{
-                    x:1,
-                    y:1
-                })
+            if(this._countFails == 4){
+                gsap.to(this._chef, {
+                alpha: 1, duration: 1, onComplete: () => {
+                    gsap.to(this._logo, { alpha: 0, duration: 0.5 });
+                    gsap.to(this._downloadButton, { alpha: 0, duration: 0.5 });
+                    console.log('Finished game');
+                    this._finalScreen.show(false);
+                    this._addBlur();
+                    window.parent && window.parent.postMessage && window.parent.postMessage('complete', '*');
+                }
+            })
+            this._countFails++
             }
-
 
             if (this._readyBurger) {
                 if (this._hamburger.x <= -325) {
                     if (this._hamburger.y < 0 &&
                         this._hamburger.y < -42
                     ) {
-                        this._animation.kill();
-                        this._hamburger.y = 100;
-                        this._hamburger.alpha = 0;
-                        this._finishCharacter(true);
-                        this._assetsContainer.removeChild(this._hamburger)
-                        this._currentBurger++
-                        this._readyBurger = false;
-                        this._meat = false;
-                        this._lettuce = false;
-                        this._chesse = false;
+                        console.log(this._makeHamburger)
+                        console.log(this._orders[this._currentBurger])
+                        console.log(this._currentBurger)
+                        if (this._makeHamburger[0] == this._orders[this._currentBurger].a &&
+                            this._makeHamburger[1] == this._orders[this._currentBurger].b &&
+                            this._makeHamburger[2] == this._orders[this._currentBurger].c
+                        ) {
+                            this._animation.kill();
+                            this._hamburger.y = 100;
+                            this._hamburger.alpha = 0;
+                            this._finishCharacter(true);
+                            this._assetsContainer.removeChild(this._hamburger)
+                            this._currentBurger++
+                            this._readyBurger = false;
+                            this._meat = false;
+                            this._lettuce = false;
+                            this._chesse = false;
+                            this._makeHamburger = [false, false, false]
+                        } else {
+                            this._chef.playAnimation('3. sad_action', false)
+                            this._readyBurger = false;
+                            this._meat = false;
+                            this._lettuce = false;
+                            this._chesse = false;
+                            this._makeHamburger = [false, false, false]
+                            this.activeMachine();
+                            this._countFails++;
+                        }
                     }
                 }
             }
@@ -307,10 +328,11 @@ export default class MainScene extends Container {
         const chefData: CharacterConfig = this._charactersConfig.chef;
         this._chef = new SpineAnimation(50, 260, { skeleton: chefData.skeleton, atlas: chefData.atlas }, true);
         this._chef.scale.set(chefData.scale);
+        this._chef.zIndex = 2;
         this._assetsContainer.addChild(this._chef);
 
         this._globe = new Globe(this._chef.x - 350, this._chef.y - 300);
-        this._globe.zIndex = 10;
+        this._globe.zIndex = 20;
         this._assetsContainer.addChild(this._globe);
 
         for (const clientData of this._charactersConfig.clients) {
@@ -355,11 +377,17 @@ export default class MainScene extends Container {
                     character.playAnimation('happy_idle', true);
 
                     if (this._currentBurger == 0) {
-                        this.newOrder();
+                        this.newOrder(0);
                         this._tutorialHamburger();
                         this._chef.playAnimation('4. Waving', false);
                     } else {
-                        this.newOrder();
+                        if (this._currentBurger == 2) {
+                            this.newOrder(2);
+                        } else if(this._currentBurger == 4) {
+                            this.newOrder(4);
+                        }else {
+                            this.newOrder(0);
+                        }
                         this.activeMachine()
                     }
                 }
@@ -367,17 +395,20 @@ export default class MainScene extends Container {
         });
     };
 
-    private newOrder(): void {
+    private newOrder(amount: number): void {
         this._globe.show(
             this._orders[this._currentBurger].a,
             this._orders[this._currentBurger].b,
-            this._orders[this._currentBurger].c
+            this._orders[this._currentBurger].c,
+            amount
         )
 
     }
 
     private _newHamburger(): void {
-
+        this._meat = false;
+        this._lettuce = false;
+        this._chesse = false;
         this._hamburger = new Hamburger(325, -50);
         this._hamburger.zIndex = 10;
         this._hamburger.scale.set(0.4);
@@ -389,7 +420,7 @@ export default class MainScene extends Container {
     private activeMachine(): void {
         this._newOrder.cursor = 'pointer';
         this._newOrder.eventMode = 'static';
-
+        this._activeButtons();
     }
 
     private _moveHamburger(): void {
@@ -412,6 +443,7 @@ export default class MainScene extends Container {
                 ease: 'none',
                 onComplete: () => {
                     this._readyBurger = true;
+                    this._deactivateButtons();
                 }
             })
 
@@ -423,7 +455,20 @@ export default class MainScene extends Container {
                 },
                 ease: 'none',
                 delay: 6,
-                duration: 2,
+                duration: 2, onComplete: () => {
+                    this._hamburger.zIndex = 0;
+                    gsap.to(this._hamburger, {
+                        x: -100,
+                        y: -60
+                    }
+
+                    )
+                    this._hamburger.throwBurger(
+                        this._makeHamburger[0],
+                        this._makeHamburger[1],
+                        this._makeHamburger[2]
+                    )
+                }
             })
 
 
@@ -592,64 +637,79 @@ export default class MainScene extends Container {
         let positionTo: number, finishAnimation: string;
         const currentCharacters = this._currentCharacters;
         if (isCorrect) {
-            this._chef.playAnimation('2. happy_action', false);
             finishAnimation = 'happy_food';
-            this._globe.hide();
-            let distance = 0;
-            if (this._maskCount.x >= 320) {
-                distance = 350
-                this._countCoin = 500;
-
+            this.activeMachine();
+            if (this._currentBurger == 2) {
+                this._chef.playAnimation('2. happy_action', false);
             } else {
-                this._countCoin = this._countCoin + 200
-                distance = this._maskCount.x + 160
-            }
-            this._textCoin.text = this._countCoin
-            gsap.to(this._maskCount, {
-                x: distance,
-                duration: 1,
-                onComplete: () => {
-                    if (this._maskCount.x == 350) {
-                        //show update
-                    }
+                this._chef.playAnimation('2. happy_action', false);
+                finishAnimation = 'happy_food';
+                this._globe.hide();
+                let distance = 0;
+                if (this._maskCount.x >= 320) {
+                    distance = 350
+                    this._countCoin = 500;
+
+                } else {
+                    this._countCoin = this._countCoin + 200
+                    distance = this._maskCount.x + 160
                 }
-            })
+                this._textCoin.text = this._countCoin
+                gsap.to(this._maskCount, {
+                    x: distance,
+                    duration: 1,
+                    onComplete: () => {
+                        if (this._maskCount.x == 350) {
+
+                            this._buttonUpgrade.alpha = 1;
+                            this._buttonUpgrade.eventMode = 'static';
+                            this._buttonUpgrade.cursor = 'pointer';
+                            gsap.fromTo(this._buttonUpgrade.scale, {
+                                x: 0, y: 0
+                            }, { x: 1, y: 1, duration: 0.5, ease: 'bounce.inOut' });
+                        }
+                    }
+                })
+            }
+
         } else {
             this._gamePassed = false;
             finishAnimation = this._currentClient.characters[0].name == 'naomi' ? 'negative' : 'happy_idle';
             this._chef.playAnimation('3. sad_action', false)
 
         }
-        const reactionTime = currentCharacters[0].getAnimationDuration(finishAnimation);
-        currentCharacters.forEach((character, index) => {
-            character.playAnimation(finishAnimation, false);
-            if (currentCharacters.length > 1 && index == 0) {
-                positionTo = isCorrect ? this._secondCharacterPosition.to : this._characterPositions.from;
-            } else {
-                positionTo = isCorrect ? this._characterPositions.to : this._characterPositions.from;
-            }
-            gsap.to(character.position, {
-                x: this._characterPositions.from,
-                duration: this._walkTime,
-                delay: reactionTime,
-                ease: 'none',
-                onComplete: () => {
-                    character.alpha = 0;
-                },
-                onStart: () => {
-                    character.scale.x *= -1;
+        if (this._currentBurger != 2) {
+            const reactionTime = currentCharacters[0].getAnimationDuration(finishAnimation);
+            currentCharacters.forEach((character, index) => {
+                character.playAnimation(finishAnimation, false);
+                if (currentCharacters.length > 1 && index == 0) {
+                    positionTo = isCorrect ? this._secondCharacterPosition.to : this._characterPositions.from;
+                } else {
+                    positionTo = isCorrect ? this._characterPositions.to : this._characterPositions.from;
+                }
+                gsap.to(character.position, {
+                    x: this._characterPositions.from,
+                    duration: this._walkTime,
+                    delay: reactionTime,
+                    ease: 'none',
+                    onComplete: () => {
+                        character.alpha = 0;
+                    },
+                    onStart: () => {
+                        character.scale.x *= -1;
 
-                    character.playAnimation('walk_happy', true);
+                        character.playAnimation('walk_happy', true);
+                    }
+                });
+                if (index == currentCharacters.length - 1) {
+                    gsap.delayedCall(this._isPortrait() ? this._walkTime + reactionTime :
+                        this._walkTime * 0.85, () => {
+                            this._chef.playAnimation('1. happy_idle', true);
+                            this._goToNextClient();
+                        });
                 }
             });
-            if (index == currentCharacters.length - 1) {
-                gsap.delayedCall(this._isPortrait() ? this._walkTime + reactionTime :
-                    this._walkTime * 0.85, () => {
-                        this._chef.playAnimation('1. happy_idle', true);
-                        this._goToNextClient();
-                    });
-            }
-        });
+        }
     }
 
 
@@ -686,58 +746,59 @@ export default class MainScene extends Container {
     }
 
     private _createButtons(): void {
-        const button1 = new Sprite(Assets.get('button1'))
-        this._assetsContainer.addChild(button1)
-        button1.anchor.set(0.5);
-        button1.x = -130;
-        button1.y = 110;
-        button1.zIndex = 1;
-        button1.alpha = 1;
+        this._button1 = new Sprite(Assets.get('button1'))
+        this._assetsContainer.addChild(this._button1)
+        this._button1.anchor.set(0.5);
+        this._button1.x = -130;
+        this._button1.y = 110;
+        this._button1.zIndex = 3;
+        this._button1.alpha = 1;
 
-        const button2 = new Sprite(Assets.get('button2'))
-        this._assetsContainer.addChild(button2);
-        button2.anchor.set(0.5);
-        button2.x = 5;
-        button2.y = 110;
-        button2.zIndex = 1;
+        this._button2 = new Sprite(Assets.get('button2'))
+        this._assetsContainer.addChild(this._button2);
+        this._button2.anchor.set(0.5);
+        this._button2.x = 5;
+        this._button2.y = 110;
+        this._button2.zIndex = 3;
+        this._button2.alpha = 1;
 
-        button2.alpha = 1;
+        this._button3 = new Sprite(Assets.get('button3'))
+        this._assetsContainer.addChild(this._button3);
+        this._button3.anchor.set(0.5);
+        this._button3.x = 140;
+        this._button3.y = 110;
+        this._button3.zIndex = 3;
+        this._button3.alpha = 1;
 
-        const button3 = new Sprite(Assets.get('button3'))
-        this._assetsContainer.addChild(button3);
-        button3.anchor.set(0.5);
-        button3.x = 140;
-        button3.y = 110;
-        button3.zIndex = 1;
-        button3.alpha = 1;
-
-        button1.on("pointerdown", () => {
+        this._button1.on("pointerdown", () => {
             this._chesse = true;
             this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+            this._makeHamburger[2] = true;
         });
 
-        button2.on("pointerdown", () => {
+        this._button2.on("pointerdown", () => {
             this._meat = true;
             this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+            this._makeHamburger[0] = true;
         });
 
 
-        button3.on("pointerdown", () => {
+        this._button3.on("pointerdown", () => {
             this._lettuce = true;
             this._hamburger.createHamburger(this._meat, this._lettuce, this._chesse);
+            this._makeHamburger[1] = true;
         });
 
-        button1.eventMode = 'static';
-        button1.cursor = 'pointer';
-        button2.eventMode = 'static';
-        button2.cursor = 'pointer';
-        button3.eventMode = 'static';
-        button3.cursor = 'pointer';
 
     }
 
-    private _showButtons(): void {
-
+    private _activeButtons(): void {
+        this._button1.eventMode = 'static';
+        this._button1.cursor = 'pointer';
+        this._button2.eventMode = 'static';
+        this._button2.cursor = 'pointer';
+        this._button3.eventMode = 'static';
+        this._button3.cursor = 'pointer';
     }
 
     private _hideButtons(): void {
@@ -745,7 +806,12 @@ export default class MainScene extends Container {
     }
 
     private _deactivateButtons(): void {
-
+        this._button1.eventMode = 'none';
+        this._button1.cursor = 'none';
+        this._button2.eventMode = 'none';
+        this._button2.cursor = 'none';
+        this._button3.eventMode = 'none';
+        this._button3.cursor = 'none';
     }
 
     public resize(width: number, height: number): void {

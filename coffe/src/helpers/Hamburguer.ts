@@ -61,6 +61,43 @@ export default class Hamburger extends Container {
         this.createHamburger(meatSelect,lettuceSelect,chesseSelect)
     }
 
+    
+    public throwBurger(meatSelect:boolean,lettuceSelect:boolean,chesseSelect:boolean):void{
+        this._tray.alpha = 0;
+        this._lettuce.alpha = lettuceSelect ? 1 : 0;
+        this._meat.alpha = meatSelect ? 1 : 0;
+        this._chesse.alpha = chesseSelect ? 1 : 0;
+        gsap.to(this._hbBottom,{
+            rotation:Math.floor(Math.random() * 4) + 3,
+            y:this._hbBottom.y + 100,
+            x:Math.floor(Math.random() * 21) + 100
+        })
+        
+        gsap.to(this._hbTop,{
+            rotation:Math.floor(Math.random() * 4) + 3,
+            y:this._hbBottom.y + 100,
+            x:Math.floor(Math.random() * 21) + 100
+        })
+        
+        gsap.to(this._meat,{
+            rotation:Math.floor(Math.random() * 4) + 3,
+            y:this._hbBottom.y + 100,
+            x:Math.floor(Math.random() * 21) + 100
+        })
+        
+        gsap.to(this._lettuce,{
+            rotation:Math.floor(Math.random() * 4) + 3,
+            y:this._hbBottom.y + 100,
+            x:Math.floor(Math.random() * 21) + 100
+        })
+
+        gsap.to(this._chesse,{
+            rotation:Math.floor(Math.random() * 4) + 3,
+            y:this._hbBottom.y + 100,
+            x:Math.floor(Math.random() * 21) + 100
+        })
+    }
+
     public startMakeHB():void{
         this.eventMode = 'static';
         this.cursor = 'pointer';

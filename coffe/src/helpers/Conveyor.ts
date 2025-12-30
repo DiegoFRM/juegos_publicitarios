@@ -33,7 +33,6 @@ export default class Conveyor extends Container {
         this._anim.play();
         this._anim.loop = true;
         this._anim.onComplete= () => {
-            //this._conveyorUpgradeAnimation()
         }
 
         this.addChild(this._anim)
@@ -43,7 +42,7 @@ export default class Conveyor extends Container {
         this.addChild(this._highlight)
     }
 
-        private async _conveyorUpgradeAnimation() {
+        public async conveyorUpgradeAnimation() {
             
             this.removeChild(this._anim)
         for (let c = 0; c < 31; c++) {
